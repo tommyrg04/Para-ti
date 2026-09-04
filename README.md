@@ -10,6 +10,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | Persona | Archivo | URL pública | Estado |
 |---|---|---|---|
 | emil    | `/emil/index.html`    | https://tommyrg04.github.io/plantillas/emil/    | ✅ lista |
+| emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/plantillas/emil/corazon/ | ✅ lista |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/plantillas/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/plantillas/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/plantillas/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -54,6 +55,26 @@ Jardín nocturno azul. Fondo `radial-gradient` en tonos petróleo.
 - Mensaje arriba, "te quiero" y firma **Para: Emil / De: T**.
 - `viewBox="0 0 400 560"`, `preserveAspectRatio="xMidYMax slice"` (el suelo siempre pegado abajo).
 
+### emil / corazón — vertical (iPhone), **interactiva**
+Corazón de polvo de luz rojo sobre negro puro. **No arranca sola: hay que tocar.**
+
+- Pantalla inicial: una brasa roja latiendo + la pista «toca la luz» (`<button>` a pantalla
+  completa, así también funciona con teclado).
+- Al tocar: la brasa estalla en 54 chispas hacia fuera y, de ahí, **~640 partículas
+  llegan volando** desde fuera de pantalla y se ensamblan en el corazón.
+  - 340 en el contorno (170 por mitad, repartidas a distancia igual con
+    `getPointAtLength` sobre una guía invisible que luego se borra).
+  - 300 de relleno, repartidas por muestreo por rechazo con un test de
+    punto-en-polígono contra la silueta — así no se forma la costura vertical que
+    salía al repartirlas por ángulo.
+- Solo ~30 % de las partículas siguen titilando después de llegar: recorta mucho el
+  repintado por frame sin que se note.
+- **No hay ninguna luz de fondo ni aura central**: el fondo es `#000` plano y toda la
+  luz sale de los gradientes radiales de las propias partículas.
+- Contador que sube desbocado bajo el rótulo «Como crece mi amor por ti»
+  (`requestAnimationFrame`, +1.400–4.200 por frame, no se detiene nunca).
+- Firma **Para: Emil / De: Tom**.
+
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
 
@@ -92,6 +113,24 @@ Desglose interno de cada flor, relativo a su `d` (delay base de la tabla):
 
 Bucles permanentes: `mecer` 8–10 s (tallos), `respirar` 6 s (auras),
 `titilar` 5 s, `flotar` 13 s, `subirChispa` 4.5 s.
+
+## Secuencia de tiempos — emil / corazón
+
+Todo cuenta desde el **toque**, no desde la carga.
+
+| t (s) | Qué pasa |
+|---|---|
+| 0.0 | Estalla la brasa: 54 chispas salen disparadas (1.1 s) |
+| 0.35 – 2.45 | Las partículas del contorno llegan volando, de la punta de abajo hacia arriba por las dos mitades a la vez (cada una tarda 1.5 s en aterrizar) |
+| 1.2 – 3.1 | Llegan las partículas del relleno, del centro hacia afuera |
+| ~3.9 | El corazón empieza a latir (bucle 2.4 s, `scale` hasta 1.085 con doble golpe) |
+| 4.4 | Empiezan a subir las brasas (bucle 6.5 s) |
+| **4.6** | Línea 1 del mensaje |
+| **5.7** | Línea 2 |
+| **6.8** | Línea 3 |
+| **8.0** | Aparece «Como crece mi amor por ti» |
+| **8.2** | El contador se dispara y ya no para |
+| **9.4** | Firma |
 
 ---
 
