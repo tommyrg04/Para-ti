@@ -8,47 +8,58 @@
   *{margin:0;padding:0;box-sizing:border-box}
 
   body{
-    min-height:100svh;background:#000;overflow:hidden;
+    min-height:100svh;background:#020610;overflow:hidden;
     font-family:ui-serif, Georgia, "Times New Roman", serif;
   }
   .escena{
     position:relative;height:100svh;width:100%;overflow:hidden;
-    background:#000;
+    /* mismo degradado que el jardin: el resplandor queda abajo, como un horizonte */
+    background:radial-gradient(95% 68% at 50% 92%, #10303f 0%, #08192a 45%, #020610 100%);
+  }
+  .escena::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:4;
+    background:radial-gradient(76% 60% at 50% 52%, rgba(2,6,16,0) 52%, rgba(2,6,16,.5) 100%);
   }
 
-  /* ---------- fondo ---------- */
   .estrella{
     position:absolute;border-radius:50%;background:#fff;
     will-change:transform,opacity;
     animation:titilar 5.5s ease-in-out infinite;
   }
-  @keyframes titilar{0%,100%{opacity:.08;transform:scale(.6)}50%{opacity:.62;transform:scale(1.2)}}
+  @keyframes titilar{0%,100%{opacity:.12;transform:scale(.7)}50%{opacity:.85;transform:scale(1.25)}}
 
-  .mota{
-    position:absolute;width:2.5px;height:2.5px;border-radius:50%;
-    background:#ff9fb2;box-shadow:0 0 10px 3px rgba(255,80,110,.45);
+  .luz{
+    position:absolute;width:3px;height:3px;border-radius:50%;
+    background:#e2f2ff;box-shadow:0 0 10px 3px rgba(190,225,255,.5);
     opacity:0;will-change:transform,opacity;
     animation:flotar 13s ease-in-out infinite;
   }
   @keyframes flotar{
     0%{opacity:0;transform:translate(0,0)}
-    18%{opacity:.7}70%{opacity:.28}
-    100%{opacity:0;transform:translate(38px,-225px)}
+    15%{opacity:.8}70%{opacity:.35}
+    100%{opacity:0;transform:translate(55px,-190px)}
   }
 
   svg.lienzo{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
 
-  /* ---------- particulas: llegan volando y se quedan formando el corazon ---------- */
+  /* ---------- particulas ---------- */
   .particula{
     transform-box:fill-box;transform-origin:50% 50%;
     transform:translate(var(--dx),var(--dy)) scale(.15);opacity:0;
     animation:armar 1.5s cubic-bezier(.16,.86,.22,1) var(--d) forwards;
   }
-  /* solo una parte sigue latiendo despues: menos repintado por frame */
+  /* una parte late; una parte mas pequena ademas flota. el resto queda quieto:
+     asi el conjunto respira sin repintar 600 nodos por frame */
   .particula.viva{
-    will-change:transform,opacity;
+    will-change:opacity;
     animation:armar 1.5s cubic-bezier(.16,.86,.22,1) var(--d) forwards,
               pulso var(--t) ease-in-out var(--tp) infinite;
+  }
+  .particula.flota{
+    will-change:transform,opacity;
+    animation:armar 1.5s cubic-bezier(.16,.86,.22,1) var(--d) forwards,
+              pulso var(--t) ease-in-out var(--tp) infinite,
+              deriva var(--dv) ease-in-out var(--tp) infinite;
   }
   @keyframes armar{
     0%{transform:translate(var(--dx),var(--dy)) scale(.15);opacity:0}
@@ -57,60 +68,75 @@
     100%{transform:translate(0,0) scale(1);opacity:1}
   }
   /* arranca en 1 para engancharse sin salto con el final de armar */
-  @keyframes pulso{0%,100%{opacity:1}50%{opacity:.34}}
-
-  /* ---------- latido ---------- */
-  .latido{
-    transform-box:view-box;transform-origin:200px 373px;
-    will-change:transform;
-    animation:latir 2.4s ease-in-out 3.9s infinite;
-  }
-  @keyframes latir{
-    0%{transform:scale(1)}
-    6%{transform:scale(1.085)}
-    13%{transform:scale(1.022)}
-    20%{transform:scale(1.058)}
-    36%{transform:scale(1)}
-    100%{transform:scale(1)}
+  @keyframes pulso{0%,100%{opacity:1}50%{opacity:.3}}
+  @keyframes deriva{
+    0%,100%{transform:translate(0,0) scale(1)}
+    25%{transform:translate(var(--ax),var(--ay)) scale(1.08)}
+    50%{transform:translate(calc(var(--ax) * -.7), calc(var(--ay) * .85)) scale(.94)}
+    75%{transform:translate(calc(var(--ax) * .45), calc(var(--ay) * -.8)) scale(1.04)}
   }
 
+  /* polvo ambiental: da atmosfera al fondo sin anadir ninguna luz que no sea una particula */
+  .ambiente{
+    transform-box:fill-box;transform-origin:50% 50%;
+    opacity:0;will-change:transform,opacity;
+    animation:entrarAmb 3s ease-out var(--d) forwards,
+              vagar var(--dv) ease-in-out var(--d) infinite;
+  }
+  @keyframes entrarAmb{to{opacity:var(--o)}}
+
+  /* polvo desenfocado en primer plano: da profundidad de camara */
+  .bokeh{
+    transform-box:fill-box;transform-origin:50% 50%;
+    opacity:0;will-change:transform,opacity;
+    animation:entrarBokeh 2.4s ease-out var(--d) forwards,
+              vagar var(--dv) ease-in-out var(--d) infinite;
+  }
+  @keyframes entrarBokeh{to{opacity:var(--o)}}
+  @keyframes vagar{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(var(--ax),var(--ay)) scale(1.12)}
+    66%{transform:translate(calc(var(--ax) * -.8), calc(var(--ay) * -.5)) scale(.9)}
+  }
+
+  /* brasas que se escapan hacia arriba */
   .polvo{
     will-change:transform,opacity;opacity:0;
-    animation:subir 6.5s ease-out var(--d) infinite;
+    animation:subir var(--v) ease-out var(--d) infinite;
   }
   @keyframes subir{
-    0%{opacity:0;transform:translateY(0) scale(.3)}
-    14%{opacity:.95}
-    72%{opacity:.4}
-    100%{opacity:0;transform:translateY(-265px) scale(.1)}
+    0%{opacity:0;transform:translate(0,0) scale(.3)}
+    12%{opacity:.9}
+    70%{opacity:.35}
+    100%{opacity:0;transform:translate(var(--sx),-300px) scale(.08)}
   }
 
-  /* ---------- pantalla de arranque ---------- */
+  /* ---------- arranque ---------- */
   .disparador{
     position:absolute;inset:0;z-index:6;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;
     background:transparent;border:0;cursor:pointer;
     font-family:inherit;-webkit-tap-highlight-color:transparent;
   }
   .brasa{
-    width:26px;height:26px;border-radius:50%;
-    background:radial-gradient(circle at 42% 38%, #fff 0%, #ff506e 38%, #d1002a 72%, rgba(160,0,25,0) 100%);
-    box-shadow:0 0 22px 8px rgba(255,25,65,.55), 0 0 60px 22px rgba(255,20,60,.28);
+    width:22px;height:22px;border-radius:50%;
+    background:radial-gradient(circle at 42% 38%, #fff 0%, #cfe9ff 32%, #4d8fe0 66%, rgba(27,71,168,0) 100%);
+    box-shadow:0 0 20px 7px rgba(160,210,255,.5), 0 0 56px 20px rgba(120,180,255,.22);
     will-change:transform,opacity;
     animation:brasear 1.7s ease-in-out infinite;
   }
   @keyframes brasear{
-    0%,100%{transform:scale(.82);opacity:.72}
-    18%{transform:scale(1.16);opacity:1}
-    40%{transform:scale(.95);opacity:.86}
+    0%,100%{transform:scale(.78);opacity:.68}
+    18%{transform:scale(1.18);opacity:1}
+    40%{transform:scale(.94);opacity:.84}
   }
   .pista{
-    font-size:clamp(.82rem,2.9vw,1rem);
-    font-style:italic;letter-spacing:.22em;text-transform:lowercase;
-    color:#ffb9c6;text-shadow:0 0 20px rgba(255,60,95,.6);
+    font-size:clamp(.85rem,2.9vw,1.05rem);
+    font-style:italic;letter-spacing:.08em;
+    color:#a6c8dd;text-shadow:0 0 22px rgba(150,205,255,.5);
     will-change:opacity;animation:respirarPista 2.6s ease-in-out infinite;
   }
-  @keyframes respirarPista{0%,100%{opacity:.42}50%{opacity:.95}}
+  @keyframes respirarPista{0%,100%{opacity:.34}50%{opacity:.92}}
   .disparador.fuera{pointer-events:none;animation:salir .55s ease-out forwards}
   @keyframes salir{to{opacity:0;transform:scale(1.9)}}
 
@@ -126,59 +152,60 @@
 
   /* ---------- texto ---------- */
   .mensaje{
-    position:absolute;z-index:2;
+    position:absolute;z-index:5;
     left:env(safe-area-inset-left);right:env(safe-area-inset-right);
-    top:calc(3.6vh + env(safe-area-inset-top));
-    text-align:center;padding:0 8vw;color:#fff2f4;
+    top:calc(5vh + env(safe-area-inset-top));
+    text-align:center;padding:0 7vw;
   }
-  .mensaje p{
-    font-size:clamp(.95rem,3.6vw,1.46rem);
-    line-height:1.55;font-style:italic;letter-spacing:.012em;
-    opacity:0;transform:translateY(14px);
-    text-shadow:0 0 30px rgba(255,60,95,.55);
-  }
-  .activo .mensaje p{animation:emerger 2.1s cubic-bezier(.16,.7,.2,1) var(--r) forwards}
-  .mensaje p + p{margin-top:.85rem}
-  .mensaje p.uno{--r:4.6s}
-  .mensaje p.dos{--r:5.7s}
-  .mensaje p.tres{--r:6.8s}
+  .mensaje p{opacity:0;transform:translateY(16px)}
+  .activo .mensaje p{animation:emerger 2.2s cubic-bezier(.16,.7,.2,1) var(--r) forwards}
   @keyframes emerger{to{opacity:1;transform:translateY(0)}}
 
+  /* jerarquia: la afirmacion pesa, la razon acompana, la promesa se acerca */
+  /* mismo cuerpo, cursiva y halo azul que el jardin */
+  .mensaje p{
+    font-size:clamp(1rem,3.7vw,1.6rem);line-height:1.6;
+    font-style:italic;color:#eef8ff;
+    text-shadow:0 0 30px rgba(150,205,255,.35);
+  }
+  .l1{--r:4.6s}
+  .l2{--r:5.7s;margin-top:.72rem}
+  .l3{--r:7s;margin-top:1.5rem;color:#c9e2f2}
+
   .contador{
-    position:absolute;z-index:2;left:0;right:0;
-    bottom:calc(14vh + env(safe-area-inset-bottom));
+    position:absolute;z-index:5;left:0;right:0;
+    bottom:calc(12.5vh + env(safe-area-inset-bottom));
     text-align:center;opacity:0;
   }
-  .activo .contador{animation:emerger 1.6s ease-out 8s forwards}
+  .activo .contador{animation:emerger 1.8s ease-out 8.4s forwards}
   .rotulo{
-    font-size:clamp(.8rem,2.9vw,1.02rem);
-    font-style:italic;color:#ffc3ce;letter-spacing:.05em;
-    text-shadow:0 0 22px rgba(255,60,95,.5);
+    font-size:clamp(.85rem,2.9vw,1.05rem);
+    font-style:italic;letter-spacing:.06em;color:#a6c8dd;
+    text-shadow:0 0 22px rgba(150,205,255,.4);
   }
   .cifra{
-    margin-top:.42rem;
-    font-size:clamp(2rem,8.6vw,3.2rem);
-    font-variant-numeric:tabular-nums;
-    letter-spacing:.02em;color:#fff;
-    text-shadow:0 0 12px rgba(255,255,255,.55), 0 0 34px rgba(255,40,80,.85), 0 0 62px rgba(255,20,60,.6);
+    margin-top:.5rem;
+    font-size:clamp(2.1rem,9vw,3.4rem);line-height:1;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+    letter-spacing:.01em;color:#eef8ff;
+    text-shadow:0 0 12px rgba(255,255,255,.45), 0 0 34px rgba(150,205,255,.75), 0 0 70px rgba(80,160,255,.45);
   }
 
   .firma{
-    position:absolute;z-index:2;left:0;right:0;
-    bottom:calc(4.2vh + env(safe-area-inset-bottom));
+    position:absolute;z-index:5;left:0;right:0;
+    bottom:calc(4.4vh + env(safe-area-inset-bottom));
     text-align:center;
-    font-size:clamp(.82rem,2.8vw,1rem);
-    color:#ffb9c6;letter-spacing:.16em;text-transform:uppercase;
-    opacity:0;
+    font-size:clamp(.85rem,2.9vw,1.05rem);
+    color:#a6c8dd;letter-spacing:.08em;opacity:0;
   }
-  .activo .firma{animation:aparecer 2.2s ease-out 9.4s forwards}
-  .firma span{display:block;margin-top:.4rem;color:#d78e9e;letter-spacing:.2em}
+  .activo .firma{animation:aparecer 2.4s ease-out 9.8s forwards}
+  .firma span{display:block;margin-top:.35rem}
   @keyframes aparecer{to{opacity:1}}
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.01ms !important;animation-iteration-count:1 !important;animation-delay:0s !important}
     .particula{transform:none;opacity:1}
-    .latido{transform:none}
+    .bokeh,.ambiente{opacity:var(--o);transform:none}
     .polvo,.chispazo{opacity:0}
     .mensaje p,.contador{opacity:1;transform:none}
     .firma{opacity:1}
@@ -195,9 +222,9 @@
   </button>
 
   <div class="mensaje">
-    <p class="uno">Contigo no hay días comunes: todos se vuelven especiales.</p>
-    <p class="dos">Por eso no espero una fecha para quererte; mi amor no entiende de calendarios.</p>
-    <p class="tres">Y nunca voy a dejar que olvides el cariño que te tengo, mi príncipe.</p>
+    <p class="l1">No espero un día especial para quererte.</p>
+    <p class="l2">Contigo cualquier día lo es.</p>
+    <p class="l3">Y no voy a dejar que lo olvides, mi príncipe.</p>
   </div>
 
   <div class="contador">
@@ -210,33 +237,48 @@
     <span>De: Tom</span>
   </div>
 
-  <svg class="lienzo" viewBox="0 0 400 740" preserveAspectRatio="xMidYMid meet" aria-label="Un corazón de partículas de luz que se arma y late">
+  <svg class="lienzo" viewBox="0 0 400 740" preserveAspectRatio="xMidYMid meet" aria-label="Un corazón de polvo de luz que se arma y late">
     <defs>
       <!-- cada particula brilla por su gradiente: nada de feGaussianBlur -->
+      <!-- g0 lirio blanco, g1 lirio azul, g2 hortensia, g3 oro del estambre -->
       <radialGradient id="g0">
         <stop offset="0%"   stop-color="#ffffff" stop-opacity="1"/>
-        <stop offset="26%"  stop-color="#ffd0d8" stop-opacity=".92"/>
-        <stop offset="58%"  stop-color="#ff2d55" stop-opacity=".34"/>
-        <stop offset="100%" stop-color="#ff0a34" stop-opacity="0"/>
+        <stop offset="26%"  stop-color="#eafaff" stop-opacity=".92"/>
+        <stop offset="58%"  stop-color="#a9e2d8" stop-opacity=".32"/>
+        <stop offset="100%" stop-color="#dbfff7" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="g1">
-        <stop offset="0%"   stop-color="#ffdfe4" stop-opacity="1"/>
-        <stop offset="24%"  stop-color="#ff2d55" stop-opacity=".95"/>
-        <stop offset="58%"  stop-color="#e00028" stop-opacity=".34"/>
-        <stop offset="100%" stop-color="#a8001f" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#eaf5ff" stop-opacity="1"/>
+        <stop offset="24%"  stop-color="#5d94dc" stop-opacity=".95"/>
+        <stop offset="58%"  stop-color="#1b47a8" stop-opacity=".34"/>
+        <stop offset="100%" stop-color="#12327c" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="g2">
-        <stop offset="0%"   stop-color="#fff2f4" stop-opacity="1"/>
-        <stop offset="22%"  stop-color="#ff4767" stop-opacity=".92"/>
-        <stop offset="56%"  stop-color="#ff0a34" stop-opacity=".34"/>
-        <stop offset="100%" stop-color="#c1001f" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#f4faff" stop-opacity="1"/>
+        <stop offset="22%"  stop-color="#8fb8ff" stop-opacity=".92"/>
+        <stop offset="56%"  stop-color="#3c63c9" stop-opacity=".34"/>
+        <stop offset="100%" stop-color="#3559b8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="g3">
+        <stop offset="0%"   stop-color="#fffdf0" stop-opacity="1"/>
+        <stop offset="26%"  stop-color="#f2dd8e" stop-opacity=".9"/>
+        <stop offset="60%"  stop-color="#c9a94f" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#c9a94f" stop-opacity="0"/>
+      </radialGradient>
+      <!-- particula desenfocada: sin nucleo duro -->
+      <radialGradient id="gb">
+        <stop offset="0%"   stop-color="#8fc4ff" stop-opacity=".62"/>
+        <stop offset="42%"  stop-color="#2f6fd6" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="#12327c" stop-opacity="0"/>
       </radialGradient>
     </defs>
 
+    <g id="ambiente"></g>
     <g id="corazon">
       <g id="dentro"></g>
       <g id="borde"></g>
     </g>
+    <g id="bokeh"></g>
     <g id="estallido"></g>
     <g id="polvo"></g>
   </svg>
@@ -249,21 +291,37 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const escena = document.querySelector('.escena');
 const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- fondo ---------- */
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 110; i++) {
   const s = document.createElement('div'); s.className = 'estrella';
-  const t = rnd(1, 2.2);
-  s.style.cssText = `left:${rnd(0,100)}%;top:${rnd(0,94)}%;width:${t}px;height:${t}px;animation-delay:${rnd(0,5.5).toFixed(2)}s`;
+  const t = rnd(1, 2.1);
+  s.style.cssText = `left:${rnd(0,100)}%;top:${rnd(0,96)}%;width:${t}px;height:${t}px;animation-delay:${rnd(0,5.5).toFixed(2)}s`;
   escena.appendChild(s);
 }
-for (let i = 0; i < 12; i++) {
-  const m = document.createElement('div'); m.className = 'mota';
-  m.style.cssText = `left:${rnd(4,96)}%;top:${rnd(50,94)}%;animation-delay:${rnd(0,13).toFixed(2)}s`;
-  escena.appendChild(m);
+
+for (let i = 0; i < 16; i++) {
+  const l = document.createElement('div'); l.className = 'luz';
+  l.style.cssText = `left:${rnd(2,98)}%;top:${rnd(45,88)}%;animation-delay:${rnd(0,13).toFixed(2)}s`;
+  escena.appendChild(l);
+}
+
+/* polvo ambiental: se ve ya en la pantalla de arranque */
+const ambiente = document.querySelector('#ambiente');
+for (let i = 0; i < 34; i++) {
+  const a = el('circle', {
+    cx: rnd(0, 400).toFixed(1), cy: rnd(0, 740).toFixed(1),
+    r: rnd(.6, 1.7).toFixed(2),
+    fill: i % 4 ? 'url(#g2)' : 'url(#g0)', class: 'ambiente'
+  });
+  a.style.setProperty('--o', rnd(.16, .45).toFixed(2));
+  a.style.setProperty('--d', rnd(0, 3).toFixed(2) + 's');
+  a.style.setProperty('--ax', rnd(-14, 14).toFixed(1) + 'px');
+  a.style.setProperty('--ay', rnd(-18, -4).toFixed(1) + 'px');
+  a.style.setProperty('--dv', rnd(14, 30).toFixed(1) + 's');
+  ambiente.appendChild(a);
 }
 
 /* ---------- geometria ---------- */
-const CX = 200, CY = 339, K = 9.2;
+const CX = 200, CY = 344, K = 10.6;
 const ANCLA = { x: CX, y: CY + 2 * K };
 function pto(t) {
   const x = 16 * Math.pow(Math.sin(t), 3);
@@ -279,8 +337,7 @@ function ladoD(hasta) {
   }
   return d;
 }
-
-/* poligono del contorno: sirve para repartir el relleno sin costuras */
+/* poligono del contorno: reparte el relleno sin costuras */
 const POLI = [];
 for (let i = 0; i < 240; i++) POLI.push(pto((i / 240) * 2 * Math.PI));
 function dentroDe(x, y) {
@@ -292,20 +349,34 @@ function dentroDe(x, y) {
   return d;
 }
 
-/* ---------- una particula de luz ---------- */
-/* un solo nodo por particula: posicion en cx/cy, animacion en CSS.
-   asi no chocan el atributo transform y el transform de CSS. */
-function particula(x, y, r, tono, retraso, op, viva) {
-  const c = el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: r.toFixed(2), fill: `url(#g${tono})`, opacity: op });
-  c.setAttribute('class', viva ? 'particula viva' : 'particula');
+/* ---------- una mota de luz ---------- */
+/* un solo nodo por mota: posicion en cx/cy, animacion en CSS, para que el
+   atributo transform y el transform de CSS no se pisen */
+/* la onda de luz: todas comparten periodo y solo cambia la fase segun la altura,
+   asi el brillo viaja de la punta de abajo hacia arriba en vez de parpadear al azar */
+const Y_ABAJO = CY + 17 * K, Y_ARRIBA = CY - 9.56 * K;
+const ONDA_T0 = 4.3, ONDA_P = 4.2;
 
-  const ang = rnd(0, Math.PI * 2), dist = rnd(160, 470);
+function mota(x, y, r, tono, retraso, op) {
+  const c = el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: r.toFixed(2), fill: `url(#g${tono})`, opacity: op.toFixed(2) });
+
+  const s = Math.random();
+  const clase = s < .17 ? 'particula flota' : (s < .45 ? 'particula viva' : 'particula');
+  c.setAttribute('class', clase);
+
+  const ang = rnd(0, Math.PI * 2), dist = rnd(170, 500);
   c.style.setProperty('--dx', (Math.cos(ang) * dist).toFixed(1) + 'px');
   c.style.setProperty('--dy', (Math.sin(ang) * dist).toFixed(1) + 'px');
   c.style.setProperty('--d', retraso.toFixed(2) + 's');
-  if (viva) {
-    c.style.setProperty('--t', rnd(1.8, 3.8).toFixed(2) + 's');
-    c.style.setProperty('--tp', (retraso + 1.5).toFixed(2) + 's');   // engancha al acabar de llegar
+  if (clase !== 'particula') {
+    const h = Math.min(1, Math.max(0, (Y_ABAJO - y) / (Y_ABAJO - Y_ARRIBA)));
+    c.style.setProperty('--t', ONDA_P + 's');
+    c.style.setProperty('--tp', (ONDA_T0 + h * ONDA_P).toFixed(2) + 's');
+  }
+  if (clase === 'particula flota') {
+    c.style.setProperty('--ax', rnd(-3.4, 3.4).toFixed(2) + 'px');
+    c.style.setProperty('--ay', rnd(-3.4, 3.4).toFixed(2) + 'px');
+    c.style.setProperty('--dv', rnd(7, 15).toFixed(1) + 's');
   }
   return c;
 }
@@ -314,11 +385,12 @@ function particula(x, y, r, tono, retraso, op, viva) {
 function armar() {
   const borde = document.querySelector('#borde');
   const dentro = document.querySelector('#dentro');
+  const bokeh = document.querySelector('#bokeh');
   const polvo = document.querySelector('#polvo');
 
   const INI = 0.35, DUR = 2.1;
 
-  /* contorno: dos rutas invisibles solo para repartir las particulas a distancia igual */
+  /* contorno: dos guias invisibles solo para repartir a distancia igual */
   [0, 2 * Math.PI].forEach((hasta, lado) => {
     const guia = el('path', { d: ladoD(hasta), fill: 'none', stroke: 'none' });
     borde.appendChild(guia);
@@ -329,19 +401,17 @@ function armar() {
       const u = (i + .5) / N;
       const p = guia.getPointAtLength(L * u);
 
-      // dispersion perpendicular para que el borde no sea un hilo perfecto
+      // dispersion perpendicular: el borde es una nube, no un hilo
       let ox = p.x - ANCLA.x, oy = p.y - ANCLA.y;
       const m = Math.hypot(ox, oy) || 1; ox /= m; oy /= m;
-      const fuera = rnd(-3.5, 4);
+      const fuera = rnd(-4, 5.5);
 
       const gorda = i % 7 === 3;
-      borde.appendChild(particula(
+      borde.appendChild(mota(
         p.x + ox * fuera, p.y + oy * fuera,
         gorda ? rnd(2.6, 4) : rnd(1.2, 2.4),
-        gorda ? 0 : (i % 2 ? 1 : 2),
-        INI + DUR * u + rnd(0, .16),
-        1,
-        Math.random() < .3
+        gorda ? 3 : (i % 2 ? 1 : (i % 5 ? 2 : 0)),
+        INI + DUR * u + rnd(0, .16), 1
       ));
     }
     guia.remove();
@@ -356,28 +426,43 @@ function armar() {
     const y = rnd(CY - 10 * K, CY + 17.2 * K);
     if (!dentroDe(x, y)) continue;
     const rr = Math.min(1, Math.hypot(x - ANCLA.x, y - ANCLA.y) / (15 * K));
-    dentro.appendChild(particula(
+    dentro.appendChild(mota(
       x, y, rnd(.9, 2),
-      puestas % 6 === 0 ? 0 : (puestas % 2 ? 1 : 2),
+      puestas % 13 === 0 ? 3 : (puestas % 6 === 0 ? 0 : (puestas % 2 ? 1 : 2)),
       1.2 + rr * 1.6 + rnd(0, .3),
-      rnd(.5, .95),
-      Math.random() < .3
+      rnd(.5, .95)
     ));
     puestas++;
   }
 
-  /* brasas subiendo */
-  for (let i = 0; i < 18; i++) {
+  /* primer plano desenfocado: profundidad de camara.
+     va fuera del grupo que late, para que no escale con el corazon */
+  for (let i = 0; i < 22; i++) {
+    const b = el('circle', {
+      cx: rnd(30, 370).toFixed(1), cy: rnd(230, 560).toFixed(1),
+      r: rnd(7, 19).toFixed(1), fill: 'url(#gb)', class: 'bokeh'
+    });
+    b.style.setProperty('--o', rnd(.06, .15).toFixed(2));
+    b.style.setProperty('--d', (2.6 + rnd(0, 2.5)).toFixed(2) + 's');
+    b.style.setProperty('--ax', rnd(-9, 9).toFixed(1) + 'px');
+    b.style.setProperty('--ay', rnd(-11, -3).toFixed(1) + 'px');
+    b.style.setProperty('--dv', rnd(11, 22).toFixed(1) + 's');
+    bokeh.appendChild(b);
+  }
+
+  /* brasas que se escapan */
+  for (let i = 0; i < 26; i++) {
     const t = rnd(0, 2 * Math.PI), r = rnd(.2, .95);
     const b = pto(t);
     const c = el('circle', {
       cx: (ANCLA.x + (b.x - ANCLA.x) * r).toFixed(1),
       cy: (ANCLA.y + (b.y - ANCLA.y) * r).toFixed(1),
-      r: rnd(.9, 2).toFixed(2),
-      fill: i % 3 ? '#ff8fa4' : '#fff0f3',
-      class: 'polvo'
+      r: rnd(.7, 1.7).toFixed(2),
+      fill: i % 3 ? '#cfe6ff' : '#fff8dc', class: 'polvo'
     });
-    c.style.setProperty('--d', (4.4 + rnd(0, 6.5)).toFixed(2) + 's');
+    c.style.setProperty('--d', (4 + rnd(0, 8)).toFixed(2) + 's');
+    c.style.setProperty('--v', rnd(6, 11).toFixed(1) + 's');
+    c.style.setProperty('--sx', rnd(-40, 40).toFixed(0) + 'px');
     polvo.appendChild(c);
   }
 
@@ -395,7 +480,7 @@ function armar() {
         requestAnimationFrame(paso);
       };
       requestAnimationFrame(paso);
-    }, 8200);
+    }, 8600);
   }
 }
 
@@ -406,10 +491,10 @@ function estallar() {
   const estallido = document.querySelector('#estallido');
   for (let i = 0; i < 54; i++) {
     const ang = (i / 54) * Math.PI * 2 + rnd(-.12, .12);
-    const dist = rnd(170, 470);
+    const dist = rnd(180, 500);
     const c = el('circle', {
-      cx: 200, cy: 373, r: rnd(.8, 1.9).toFixed(2),
-      fill: i % 4 ? '#ff5c78' : '#fff', class: 'chispazo'
+      cx: 200, cy: 383, r: rnd(.8, 1.9).toFixed(2),
+      fill: i % 4 ? '#cfe9ff' : '#fff', class: 'chispazo'
     });
     c.style.setProperty('--dx', (Math.cos(ang) * dist).toFixed(1) + 'px');
     c.style.setProperty('--dy', (Math.sin(ang) * dist).toFixed(1) + 'px');
@@ -424,7 +509,6 @@ disparador.addEventListener('click', () => {
   encendido = true;
   disparador.classList.add('fuera');
   escena.classList.add('activo');
-  document.querySelector('#corazon').classList.add('latido');
   if (!quieto) estallar();
   armar();
 });
