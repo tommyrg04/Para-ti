@@ -18,6 +18,10 @@ Como cada carpeta tiene `index.html`, la URL funciona sin escribir el nombre del
 
 ### Activar GitHub Pages (una sola vez)
 
+0. **El repo tiene que ser público.** En repos privados, Pages exige plan de pago
+   (GitHub Pro/Team) y muestra un aviso de cobro.
+   Settings → General → abajo del todo, *Danger Zone* → **Change repository visibility**
+   → *Change to public*.
 1. Repo → **Settings** → **Pages** (menú izquierdo).
 2. **Source**: `Deploy from a branch`.
 3. **Branch**: `main` — **Folder**: `/ (root)` → **Save**.
@@ -25,6 +29,10 @@ Como cada carpeta tiene `index.html`, la URL funciona sin escribir el nombre del
    (30–60 s tras cada push).
 
 No hace falta Vercel ni ningún build: son archivos estáticos puros.
+
+**Consecuencia de ser público:** cualquiera que llegue al repo ve las cuatro carpetas
+y sus mensajes. La regla de "cada persona solo conoce su ruta" aplica a los *links* que
+repartes, no al repo. Nadie va a tropezarse con él por casualidad, pero no es secreto.
 
 ---
 
