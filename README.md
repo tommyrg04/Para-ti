@@ -1,4 +1,4 @@
-# plantillas — animaciones florales
+# Para-ti — animaciones florales
 
 Cuatro páginas de regalo, una por persona. **Cada persona solo conoce su propia ruta.**
 No existe un índice en la raíz que las enlace: es a propósito.
@@ -9,13 +9,18 @@ No existe un índice en la raíz que las enlace: es a propósito.
 
 | Persona | Archivo | URL pública | Estado |
 |---|---|---|---|
-| emil    | `/emil/index.html`    | https://tommyrg04.github.io/plantillas/emil/    | ✅ lista |
-| emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/plantillas/emil/corazon/ | ✅ lista |
-| imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/plantillas/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
-| clarett | `/clarett/index.html` | https://tommyrg04.github.io/plantillas/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
-| mama    | `/mama/index.html`    | https://tommyrg04.github.io/plantillas/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
+| emil    | `/emil/index.html`    | https://tommyrg04.github.io/Para-ti/emil/    | ✅ lista |
+| emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/Para-ti/emil/corazon/ | ✅ lista |
+| imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
+| clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
+| mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
 
 Como cada carpeta tiene `index.html`, la URL funciona sin escribir el nombre del archivo.
+
+> **El repo se renombró de `plantillas` a `Para-ti`.** Eso cambia la URL pública:
+> ahora es `https://tommyrg04.github.io/Para-ti/...`. El remoto de git local sigue
+> apuntando al nombre viejo a propósito: GitHub redirige los renombres
+> indefinidamente y ese remoto es el que tiene permitido esta sesión.
 
 ### Activar GitHub Pages (una sola vez)
 
