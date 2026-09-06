@@ -134,12 +134,14 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 - Pensada para leerse rápido: ~6.360 px de alto (unas 7,5 pantallas de iPhone).
   Se recortó a 6 tarjetas en «Cosas que me encantan» y 6 cápsulas en recuerdos.
 - **Señalización de toques.** Evianny no había abierto nunca una página así, así que
-  dónde tocar se dice, no se insinúa: un aviso flotante «desliza hacia abajo ↓» que se
-  retira sola pasados 220 px de scroll; una insignia rosa «TOCA» en la primera tarjeta
-  de cada grupo, que desaparece en cuanto abre una; un rótulo «👆 Toca cada tarjeta
-  para abrirla» y otro «👆 Toca el que necesites hoy» en el kit; el «+» en color de
-  acento desde el principio para que se lea como tocable; y «▶» en el botón de ejecutar.
-  El reinicio devuelve todas las pistas.
+  dónde tocar se dice, no se insinúa — pero con el mismo lenguaje visual, sin emojis:
+  una insignia rosa «TOCA» en la primera tarjeta de cada grupo, que desaparece en cuanto
+  abre una, y una píldora idéntica de sección («TOCA PARA ABRIR», «TOCA EL QUE
+  NECESITES»). El «+» va en color de acento desde el principio para leerse tocable, y el
+  botón de ejecutar lleva «▶». El reinicio devuelve todas las pistas.
+- **Progreso vertical**: un hilo fino en el borde derecho que se llena de arriba abajo
+  con el scroll (`scaleY`), en vez de la barra horizontal superior — así indica avanzar
+  hacia abajo, que es lo que hay que hacer.
 - **11 tramos**: intro con puerta, mensaje inicial, «Tú y yo somos…» (píldoras),
   «Cosas que me encantan» (8 tarjetas desplegables), expediente (línea de tiempo),
   EVIANNY.EXE (panel con medidores y consola), kit de emergencia (4 desplegables),

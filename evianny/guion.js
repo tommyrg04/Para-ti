@@ -292,13 +292,11 @@
      --------------------------------------------------------- */
 
   function montarProgreso() {
-    const barra = $('#progreso');
-    const pista = $('#pistaScroll');
+    const hilo = $('#progresoHilo');
     let pedido = false;
     const pintar = () => {
       const alto = document.documentElement.scrollHeight - window.innerHeight;
-      barra.style.transform = 'scaleX(' + (alto > 0 ? Math.min(1, window.scrollY / alto) : 0) + ')';
-      pista.classList.toggle('ida', window.scrollY > 220);
+      hilo.style.transform = 'scaleY(' + (alto > 0 ? Math.min(1, window.scrollY / alto) : 0) + ')';
       pedido = false;
     };
     addEventListener('scroll', () => {
@@ -400,7 +398,6 @@
 
       plegables.forEach((p) => p.cerrar());
       $$('.sin-pistas').forEach((n) => n.classList.remove('sin-pistas'));
-      $('#pistaScroll').classList.remove('ida');
       consola.limpiar();
       revelado.rebobinar();
 

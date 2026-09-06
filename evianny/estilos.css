@@ -124,13 +124,21 @@ h2.titulo{
 
 /* --------------------------- barra de progreso --------------------------- */
 
+/* hilo vertical: se llena hacia abajo, que es como se avanza */
 .progreso{
-  position:fixed;top:0;left:0;right:0;height:2px;z-index:40;
-  background:var(--acento);
-  transform:scaleX(0);transform-origin:0 50%;
-  opacity:0;transition:opacity .5s var(--ease);
+  position:fixed;z-index:30;
+  right:max(.55rem, env(safe-area-inset-right));
+  top:50%;transform:translateY(-50%);
+  width:3px;height:26vh;border-radius:99px;
+  background:var(--gris-2);
+  opacity:0;transition:opacity .6s var(--ease);
 }
-.entrado .progreso{opacity:.75}
+.entrado .progreso{opacity:.85}
+.progreso__hilo{
+  display:block;width:100%;height:100%;border-radius:99px;
+  background:var(--acento);
+  transform:scaleY(0);transform-origin:50% 0;
+}
 
 /* --------------------------- 01 intro --------------------------- */
 
@@ -251,31 +259,11 @@ h2.titulo{
 .sin-pistas .pista-toque{opacity:0;transform:scale(.85);pointer-events:none}
 
 .ayuda{
-  display:inline-flex;align-items:center;gap:.45rem;
-  margin-top:.9rem;padding:.5rem .8rem;
-  font-size:.78rem;color:var(--acento);
-  background:var(--acento-suave);border:1px solid var(--acento-borde);
-  border-radius:12px;
-}
-
-.pista-scroll{
-  position:fixed;left:50%;z-index:30;
-  bottom:calc(1.1rem + env(safe-area-inset-bottom));
-  transform:translateX(-50%);
-  font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;text-indent:.18em;
-  color:var(--carbon);background:rgba(255,255,255,.82);
-  -webkit-backdrop-filter:blur(12px) saturate(1.4);
-  backdrop-filter:blur(12px) saturate(1.4);
-  border:1px solid var(--linea);border-radius:99px;
-  padding:.55rem 1rem;box-shadow:var(--sombra-2);
-  opacity:0;pointer-events:none;
-  transition:opacity .6s var(--ease);
-}
-.entrado .pista-scroll{opacity:1;animation:botar 2.3s ease-in-out infinite}
-.entrado .pista-scroll.ida{opacity:0;animation:none}
-@keyframes botar{
-  0%,100%{transform:translateX(-50%) translateY(0)}
-  50%{transform:translateX(-50%) translateY(5px)}
+  display:inline-block;margin-top:1rem;
+  font-size:.62rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--acento);background:var(--acento-suave);
+  border:1px solid var(--acento-borde);border-radius:99px;
+  padding:.42rem .82rem;
 }
 
 /* --------------------------- 05 timeline --------------------------- */
@@ -534,7 +522,6 @@ h2.titulo{
     transition-duration:.01ms !important;transition-delay:0s !important;
   }
   .rev{opacity:1;transform:none}
-  .pista-scroll{transform:translateX(-50%)}
   .intro__nombre,.intro__linea,.intro .btn{opacity:1;filter:none;transform:none}
   .linea-tiempo::before{transform:scaleY(1)}
   .hito::before{transform:scale(1);opacity:1}
