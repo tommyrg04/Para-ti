@@ -56,8 +56,8 @@
     { nombre: 'Drama', v: .6 },
     { nombre: 'Chisme', v: 1 },
     { nombre: 'Paciencia conmigo', v: .8 },
-    { nombre: 'Randomness', v: 1 },
-    { nombre: 'Ability to say “JAJAJA”', v: 1 },
+    { nombre: 'Nivel de random', v: 1 },
+    { nombre: 'Capacidad de decir “JAJAJA”', v: 1 },
   ];
 
   const SALIDAS_EXE = [
@@ -293,32 +293,6 @@
   }
 
   /* ---------------------------------------------------------
-     MÚSICA — opcional, nunca automática
-     --------------------------------------------------------- */
-
-  function montarMusica() {
-    const boton = $('#musica');
-    const audio = $('#audio');
-    let roto = false;
-
-    const marcarRota = () => { roto = true; boton.classList.add('muda'); boton.classList.remove('sonando'); };
-    audio.addEventListener('error', marcarRota);
-
-    boton.addEventListener('click', () => {
-      if (roto) return;
-      if (audio.paused) {
-        audio.play().then(
-          () => boton.classList.add('sonando'),
-          marcarRota   // no hay archivo todavía: se avisa y no se vuelve a intentar
-        );
-      } else {
-        audio.pause();
-        boton.classList.remove('sonando');
-      }
-    });
-  }
-
-  /* ---------------------------------------------------------
      BARRA DE PROGRESO
      --------------------------------------------------------- */
 
@@ -386,7 +360,6 @@
 
     const consola  = montarConsola();
     const revelado = montarRevelado();
-    montarMusica();
     montarProgreso();
 
     const intro   = $('#intro');

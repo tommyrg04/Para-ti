@@ -124,9 +124,14 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 
 - **Sin módulos ES**: abriendo por `file://` el navegador bloquea los `import` por CORS,
   así que `guion.js` es un IIFE cargado con `<script src>`.
-- Paleta: blanco cálido `#FBFBFA`, gris claro, negro suave `#131315`, carbón y un solo
-  acento azul frío `#6D8CA8`. Tipografía del sistema (SF Pro en iPhone) + monoespaciada
-  para la parte de «sistema operativo».
+- **Todo en español**, incluidos los rótulos del panel de sistema. Concordancias
+  revisadas: él escribe, ella lee («Estoy estresada» es de ella).
+- Paleta: blanco cálido `#FCFAFA`, gris claro, negro suave `#141214`, carbón y
+  **acento rosa cálido `#C0798F`** — el toque para ella. El azul frío `#7E96AC` queda
+  reducido al marco del panel `.exe`, que es lo que mantiene el conjunto sobrio.
+  Tipografía del sistema (SF Pro en iPhone) + monoespaciada para la parte de
+  «sistema operativo».
+- Pensada para leerse rápido: ~6.900 px de alto (unas 8 pantallas de iPhone).
 - **11 tramos**: intro con puerta, mensaje inicial, «Tú y yo somos…» (píldoras),
   «Cosas que me encantan» (8 tarjetas desplegables), expediente (línea de tiempo),
   EVIANNY.EXE (panel con medidores y consola), kit de emergencia (4 desplegables),
@@ -134,10 +139,7 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 - **Plegables con altura medida**: se lee `scrollHeight` real en vez de un `max-height`
   inventado, así la animación acaba exacta y se recalcula al girar el teléfono.
 - La consola de `.exe` nunca repite el mensaje anterior seguido y guarda 4 líneas como tope.
-- **Música opcional**: botón «♪» discreto que intenta `cancion.mp3`. Con `preload="none"`
-  no se toca la red hasta que ella pulsa; si el archivo no existe, el botón se marca
-  «sin música aún» y no vuelve a intentarlo. **Para añadir música: dejar `cancion.mp3`
-  dentro de `/evianny/`.** Nunca suena sola.
+- **Sin música**: se quitó a petición. No queda botón, ni `<audio>`, ni CSS ni JS.
 - Barra de progreso de lectura arriba, con el scroll leído en `requestAnimationFrame`.
 - «Volver a empezar» rebobina todo: cierra plegables y tarjeta, limpia la consola,
   quita las entradas, sube el scroll y reinicia la intro con un reflujo forzado.
