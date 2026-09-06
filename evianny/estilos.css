@@ -61,9 +61,9 @@ body.bloqueado{overflow:hidden}
   position:relative;
   max-width:var(--col);
   margin:0 auto;
-  padding:clamp(3rem,9vw,4.6rem) 1.5rem;
+  padding:clamp(2.4rem,7vw,3.8rem) 1.5rem;
 }
-.seccion--holgada{padding-block:clamp(4rem,12vw,6rem)}
+.seccion--holgada{padding-block:clamp(3.2rem,9vw,4.8rem)}
 
 .eyebrow{
   font-size:.66rem;font-weight:600;
@@ -212,7 +212,7 @@ h2.titulo{
 .tarjeta__btn:focus-visible{outline:2px solid var(--acento);outline-offset:-3px;border-radius:18px}
 .tarjeta__txt{flex:1}
 .tarjeta__mas{
-  flex:none;width:22px;height:22px;position:relative;color:var(--tenue);
+  flex:none;width:22px;height:22px;position:relative;color:var(--acento);
   transition:transform .5s var(--resorte), color .4s var(--ease);
 }
 .tarjeta__mas::before,.tarjeta__mas::after{
@@ -234,6 +234,49 @@ h2.titulo{
   transition:opacity .45s var(--ease) .08s, transform .45s var(--ease) .08s;
 }
 .tarjeta.abierta .tarjeta__interior{opacity:1;transform:none}
+
+/* --------------------------- pistas de "toca aquí" --------------------------- */
+/* Evianny no ha abierto nunca algo así: hay que decírselo, no insinuarlo. */
+
+.pista-toque{
+  flex:none;
+  font-size:.6rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--acento);background:var(--acento-suave);
+  border:1px solid var(--acento-borde);border-radius:99px;
+  padding:.26rem .5rem;white-space:nowrap;
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+  animation:latirPista 2.4s ease-in-out infinite;
+}
+@keyframes latirPista{0%,100%{opacity:.72}50%{opacity:1}}
+.sin-pistas .pista-toque{opacity:0;transform:scale(.85);pointer-events:none}
+
+.ayuda{
+  display:inline-flex;align-items:center;gap:.45rem;
+  margin-top:.9rem;padding:.5rem .8rem;
+  font-size:.78rem;color:var(--acento);
+  background:var(--acento-suave);border:1px solid var(--acento-borde);
+  border-radius:12px;
+}
+
+.pista-scroll{
+  position:fixed;left:50%;z-index:30;
+  bottom:calc(1.1rem + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;text-indent:.18em;
+  color:var(--carbon);background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  backdrop-filter:blur(12px) saturate(1.4);
+  border:1px solid var(--linea);border-radius:99px;
+  padding:.55rem 1rem;box-shadow:var(--sombra-2);
+  opacity:0;pointer-events:none;
+  transition:opacity .6s var(--ease);
+}
+.entrado .pista-scroll{opacity:1;animation:botar 2.3s ease-in-out infinite}
+.entrado .pista-scroll.ida{opacity:0;animation:none}
+@keyframes botar{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(5px)}
+}
 
 /* --------------------------- 05 timeline --------------------------- */
 
@@ -388,7 +431,7 @@ h2.titulo{
   border-radius:26px;
   margin:0 auto;max-width:calc(var(--col) + 3rem);
 }
-.oscura .seccion{padding-block:clamp(3.8rem,12vw,5.6rem)}
+.oscura .seccion{padding-block:clamp(3rem,9vw,4.4rem)}
 .oscura__nombre{
   font-size:clamp(1.7rem,7vw,2.2rem);font-weight:600;
   letter-spacing:-.03em;margin-bottom:2.4rem;
@@ -491,6 +534,7 @@ h2.titulo{
     transition-duration:.01ms !important;transition-delay:0s !important;
   }
   .rev{opacity:1;transform:none}
+  .pista-scroll{transform:translateX(-50%)}
   .intro__nombre,.intro__linea,.intro .btn{opacity:1;filter:none;transform:none}
   .linea-tiempo::before{transform:scaleY(1)}
   .hito::before{transform:scale(1);opacity:1}

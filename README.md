@@ -131,7 +131,15 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
   reducido al marco del panel `.exe`, que es lo que mantiene el conjunto sobrio.
   Tipografía del sistema (SF Pro en iPhone) + monoespaciada para la parte de
   «sistema operativo».
-- Pensada para leerse rápido: ~6.900 px de alto (unas 8 pantallas de iPhone).
+- Pensada para leerse rápido: ~6.360 px de alto (unas 7,5 pantallas de iPhone).
+  Se recortó a 6 tarjetas en «Cosas que me encantan» y 6 cápsulas en recuerdos.
+- **Señalización de toques.** Evianny no había abierto nunca una página así, así que
+  dónde tocar se dice, no se insinúa: un aviso flotante «desliza hacia abajo ↓» que se
+  retira sola pasados 220 px de scroll; una insignia rosa «TOCA» en la primera tarjeta
+  de cada grupo, que desaparece en cuanto abre una; un rótulo «👆 Toca cada tarjeta
+  para abrirla» y otro «👆 Toca el que necesites hoy» en el kit; el «+» en color de
+  acento desde el principio para que se lea como tocable; y «▶» en el botón de ejecutar.
+  El reinicio devuelve todas las pistas.
 - **11 tramos**: intro con puerta, mensaje inicial, «Tú y yo somos…» (píldoras),
   «Cosas que me encantan» (8 tarjetas desplegables), expediente (línea de tiempo),
   EVIANNY.EXE (panel con medidores y consola), kit de emergencia (4 desplegables),

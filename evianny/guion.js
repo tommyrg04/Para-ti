@@ -34,14 +34,10 @@
       texto: 'Lo demuestras en cosas chiquitas y sin avisar. Un mensaje, un “cómo estás”, y ya me cambiaste el día.' },
     { titulo: 'Tu sentido del humor.',
       texto: 'Nos reímos de cosas que no le dan risa a nadie más. Honestamente, así está perfecto.' },
-    { titulo: 'Cómo cuentas las cosas.',
-      texto: 'Puedes contarme algo de dos minutos en veinte y yo ahí, feliz. Le pones detalle a todo.' },
     { titulo: 'Que siempre hay algo de qué hablar.',
       texto: 'Nunca se nos acaba el tema. Pasamos de algo serio a una estupidez sin escalas.' },
     { titulo: 'Que puedo ser yo contigo.',
       texto: 'Creo que esa es de las cosas más bonitas de nuestra amistad. Nunca siento que tengo que medir demasiado lo que digo contigo.' },
-    { titulo: 'Que incluso en conversaciones absurdas terminamos riéndonos.',
-      texto: 'Empezamos hablando de algo importante y acabamos llorando de risa. No sé cómo lo logramos, pero funciona.' },
   ];
 
   const HITOS = [
@@ -84,9 +80,6 @@
     'Los mensajes de “cómo estás?”',
     'Los audios.',
     'Las conversaciones random.',
-    'Las veces que nos ayudamos con cualquier cosa.',
-    'Las risas por cosas que probablemente nadie más entendería.',
-    'Los consejos.',
     'Las estupideces.',
     'Simplemente estar.',
   ];
@@ -113,7 +106,7 @@
   }
 
   /** Panel plegable: mide el contenido real para que la altura anime exacto. */
-  function plegable(contenedor, cuerpo, boton) {
+  function plegable(contenedor, cuerpo, boton, alUsar) {
     let abierto = false;
     const fijar = () => { if (abierto) cuerpo.style.maxHeight = cuerpo.scrollHeight + 'px'; };
 
@@ -124,7 +117,7 @@
       cuerpo.style.maxHeight = abierto ? cuerpo.scrollHeight + 'px' : '0px';
     }
 
-    boton.addEventListener('click', () => alternar());
+    boton.addEventListener('click', () => { alternar(); if (alUsar) alUsar(); });
     window.addEventListener('resize', fijar);
     return { cerrar: () => alternar(false) };
   }
@@ -156,6 +149,7 @@
         attrs: { type: 'button', 'aria-expanded': 'false', 'aria-controls': id },
         hijos: [
           nodo('span', { clase: 'tarjeta__txt', texto: c.titulo }),
+          i === 0 ? nodo('span', { clase: 'pista-toque', texto: 'toca' }) : null,
           nodo('span', { clase: 'tarjeta__mas', attrs: { 'aria-hidden': 'true' } }),
         ],
       });
@@ -167,7 +161,7 @@
         clase: 'tarjeta rev', vars: { '--i': i }, hijos: [boton, cuerpo],
       });
       lista.appendChild(tarjeta);
-      plegables.push(plegable(tarjeta, cuerpo, boton));
+      plegables.push(plegable(tarjeta, cuerpo, boton, () => lista.classList.add('sin-pistas')));
     });
   }
 
@@ -217,6 +211,7 @@
         hijos: [
           nodo('span', { clase: 'kit__ico', attrs: { 'aria-hidden': 'true' }, texto: k.clave }),
           nodo('span', { clase: 'kit__txt', texto: k.titulo }),
+          i === 0 ? nodo('span', { clase: 'pista-toque', texto: 'toca' }) : null,
         ],
       });
       const cuerpo = nodo('div', {
@@ -230,7 +225,7 @@
         clase: 'kit__item rev', vars: { '--i': i }, hijos: [boton, cuerpo],
       });
       caja.appendChild(item);
-      plegables.push(plegable(item, cuerpo, boton));
+      plegables.push(plegable(item, cuerpo, boton, () => caja.classList.add('sin-pistas')));
     });
   }
 
@@ -298,10 +293,12 @@
 
   function montarProgreso() {
     const barra = $('#progreso');
+    const pista = $('#pistaScroll');
     let pedido = false;
     const pintar = () => {
       const alto = document.documentElement.scrollHeight - window.innerHeight;
       barra.style.transform = 'scaleX(' + (alto > 0 ? Math.min(1, window.scrollY / alto) : 0) + ')';
+      pista.classList.toggle('ida', window.scrollY > 220);
       pedido = false;
     };
     addEventListener('scroll', () => {
@@ -402,6 +399,8 @@
       escena.setAttribute('aria-hidden', 'true');
 
       plegables.forEach((p) => p.cerrar());
+      $$('.sin-pistas').forEach((n) => n.classList.remove('sin-pistas'));
+      $('#pistaScroll').classList.remove('ida');
       consola.limpiar();
       revelado.rebobinar();
 
