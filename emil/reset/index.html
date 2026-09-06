@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FCFAF7">
+<title>Emil's Reset</title>
+<style>
+  :root{
+    /* tipografia del sistema: en iPhone esto es New York + SF Pro */
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+    --crema:#FCFAF7;
+    --papel:#FFFFFF;
+    --tinta:#26262A;
+    --gris:#736E6A;
+    --gris-claro:#9C9691;
+    --azul:#C3D6E6;
+    --azul-hondo:#7E9DB8;
+    --rosa:#EBCDCE;
+    --linea:rgba(38,38,42,.09);
+
+    --col: 33rem;
+    --ease: cubic-bezier(.22,.68,.24,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+  body{
+    background:var(--crema);
+    color:var(--tinta);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body.bloqueado{overflow:hidden}
+
+  /* auras muy suaves, a base de degradados: nada de filtros pesados */
+  .fondo{
+    position:fixed;inset:-12%;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(58% 40% at 16% 6%,  rgba(195,214,230,.46), transparent 70%),
+      radial-gradient(50% 38% at 90% 22%, rgba(235,205,206,.38), transparent 72%),
+      radial-gradient(64% 44% at 46% 62%, rgba(206,220,232,.30), transparent 70%),
+      radial-gradient(58% 40% at 82% 96%, rgba(235,205,206,.30), transparent 70%);
+    will-change:transform;
+    animation:vagar 46s ease-in-out infinite;
+  }
+  @keyframes vagar{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    33%{transform:translate3d(-1.4%,1.8%,0) scale(1.05)}
+    66%{transform:translate3d(1.6%,-1.2%,0) scale(1.02)}
+  }
+
+  /* ---------------- portada ---------------- */
+  .portada{
+    position:fixed;inset:0;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:1.15rem;
+    padding:calc(env(safe-area-inset-top) + 2rem) 2rem calc(env(safe-area-inset-bottom) + 2rem);
+    text-align:center;
+    background:
+      radial-gradient(58% 34% at 18% 12%, rgba(195,214,230,.44), transparent 68%),
+      radial-gradient(52% 32% at 88% 30%, rgba(235,205,206,.36), transparent 70%),
+      radial-gradient(66% 40% at 50% 92%, rgba(206,220,232,.34), transparent 70%),
+      var(--crema);
+    transition:opacity .95s var(--ease), transform .95s var(--ease);
+  }
+  .portada.oculta{opacity:0;transform:scale(1.035);pointer-events:none}
+
+  .marca{
+    width:7px;height:7px;border-radius:50%;background:var(--rosa);
+    margin-bottom:1.6rem;opacity:0;
+    animation:marcaLatir 5.5s ease-in-out .2s infinite, subir 1.2s var(--ease) .1s forwards;
+  }
+  @keyframes marcaLatir{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
+
+  .saludo{
+    font-family:var(--serif);
+    font-size:clamp(1.85rem,7.6vw,2.7rem);
+    font-weight:400;line-height:1.24;letter-spacing:-.012em;
+    opacity:0;animation:subir 1.3s var(--ease) .3s forwards;
+  }
+  .portada .p1,.portada .p2{
+    max-width:26rem;color:var(--gris);
+    font-size:clamp(1rem,4vw,1.08rem);line-height:1.62;
+    opacity:0;
+  }
+  .portada .p1{animation:subir 1.3s var(--ease) 1.15s forwards}
+  .portada .p2{animation:subir 1.3s var(--ease) 1.95s forwards}
+
+  @keyframes subir{
+    from{opacity:0;transform:translate3d(0,14px,0)}
+    to{opacity:1;transform:translate3d(0,0,0)}
+  }
+
+  .boton{
+    display:inline-block;
+    margin-top:1.5rem;padding:.92rem 2.5rem;
+    font-family:var(--sans);font-size:.82rem;font-weight:500;
+    letter-spacing:.2em;text-transform:uppercase;
+    color:var(--tinta);background:var(--papel);
+    border:1px solid var(--linea);border-radius:999px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    box-shadow:0 1px 2px rgba(38,38,42,.04), 0 10px 26px -14px rgba(38,38,42,.28);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease), background .45s var(--ease);
+  }
+  .boton:hover{background:#fff;box-shadow:0 1px 2px rgba(38,38,42,.05), 0 16px 34px -16px rgba(38,38,42,.34)}
+  .boton:active{transform:scale(.975)}
+  .boton:focus-visible{outline:2px solid var(--azul-hondo);outline-offset:4px}
+  .portada .boton{opacity:0;animation:subir 1.2s var(--ease) 2.75s forwards}
+
+  /* ---------------- experiencia ---------------- */
+  .pagina{
+    position:relative;z-index:1;
+    opacity:0;transition:opacity 1.1s var(--ease);
+    padding:0 1.6rem;
+  }
+  .pagina.dentro{opacity:1}
+
+  .banda{
+    max-width:var(--col);margin:0 auto;
+    padding-block:clamp(4.2rem,13vw,6.4rem);
+  }
+  .banda:first-child{padding-top:calc(env(safe-area-inset-top) + clamp(5rem,17vw,7.5rem))}
+
+  /* entrada por seccion */
+  .rev{opacity:0;transform:translate3d(0,20px,0);transition:opacity 1.15s var(--ease), transform 1.15s var(--ease)}
+  .rev.visible{opacity:1;transform:translate3d(0,0,0)}
+  .rev.d1{transition-delay:.14s}
+  .rev.d2{transition-delay:.28s}
+  .rev.d3{transition-delay:.42s}
+
+  /* --- cabecera --- */
+  .titulo{
+    font-family:var(--sans);
+    font-size:clamp(1rem,4.4vw,1.32rem);
+    font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+    text-indent:.3em;text-align:center;
+  }
+  .filete{
+    width:44px;height:1px;background:var(--linea);
+    margin:1.7rem auto;transform:scaleX(0);transform-origin:50% 50%;
+    transition:transform 1.3s var(--ease) .3s;
+  }
+  .filete.visible{transform:scaleX(1)}
+  .subtitulo{
+    font-family:var(--serif);
+    font-size:clamp(1.12rem,4.7vw,1.4rem);
+    font-weight:400;line-height:1.55;text-align:center;color:var(--gris);
+    max-width:24rem;margin:0 auto;
+  }
+
+  /* --- respiracion --- */
+  .respiro{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .respirador{
+    position:relative;
+    width:clamp(158px,48vw,206px);aspect-ratio:1;
+    display:grid;place-items:center;margin-bottom:2.6rem;
+  }
+  .anillo,.nucleo{
+    position:absolute;inset:0;border-radius:50%;
+    will-change:transform;
+    animation:respirar 11s ease-in-out infinite;
+  }
+  .anillo{border:1px solid var(--linea)}
+  .a2{inset:13%;border-color:rgba(126,157,184,.22);animation-delay:.16s}
+  .nucleo{
+    inset:24%;
+    background:radial-gradient(circle at 38% 32%, #fff 0%, #EAF1F7 42%, #D3E1EC 78%, #C3D6E6 100%);
+    box-shadow:0 14px 34px -16px rgba(126,157,184,.65);
+    animation-delay:.3s;
+  }
+  @keyframes respirar{
+    0%{transform:scale(.8)}
+    40%{transform:scale(1)}
+    52%{transform:scale(1)}
+    92%{transform:scale(.8)}
+    100%{transform:scale(.8)}
+  }
+  .palabra{
+    position:relative;z-index:2;grid-area:1/1;
+    font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;
+    text-indent:.28em;color:var(--gris-claro);opacity:0;
+    animation:11s ease-in-out infinite;
+  }
+  .pal-in{animation-name:palabraIn}
+  .pal-out{animation-name:palabraOut}
+  @keyframes palabraIn{0%{opacity:0}7%{opacity:1}38%{opacity:1}47%{opacity:0}100%{opacity:0}}
+  @keyframes palabraOut{0%,52%{opacity:0}59%{opacity:1}86%{opacity:1}94%{opacity:0}100%{opacity:0}}
+
+  .respiro p{
+    font-family:var(--serif);
+    font-size:clamp(1.15rem,4.9vw,1.44rem);
+    line-height:1.85;color:var(--tinta);
+  }
+  .respiro p .suave{color:var(--gris)}
+
+  /* --- carta --- */
+  .carta{
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-radius:20px;
+    padding:clamp(1.8rem,7vw,2.6rem);
+    box-shadow:0 1px 2px rgba(38,38,42,.03), 0 26px 60px -34px rgba(38,38,42,.28);
+  }
+  .carta p{color:var(--gris);font-size:1rem;line-height:1.78}
+  .carta p + p{margin-top:1.15rem}
+  .carta .cierre{
+    margin-top:2rem;padding-top:1.6rem;border-top:1px solid var(--linea);
+    font-family:var(--serif);font-size:1.14rem;font-weight:400;line-height:1.5;
+    color:var(--tinta);text-align:center;
+  }
+
+  /* --- receta --- */
+  .rotulo{
+    font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;
+    text-indent:.28em;color:var(--gris-claro);text-align:center;
+    margin-bottom:1.9rem;
+  }
+  .receta{display:grid;gap:.85rem}
+  @media (min-width:34rem){.receta{grid-template-columns:1fr 1fr}}
+  .item{
+    background:var(--papel);border:1px solid var(--linea);border-radius:16px;
+    padding:1.35rem 1.4rem;
+    display:flex;gap:1rem;align-items:flex-start;
+    box-shadow:0 1px 2px rgba(38,38,42,.03), 0 16px 36px -30px rgba(38,38,42,.3);
+  }
+  .item .ico{font-size:1.22rem;line-height:1.5;flex:none}
+  .item h3{font-size:.99rem;font-weight:600;letter-spacing:-.004em;margin-bottom:.18rem}
+  .item p{font-size:.9rem;line-height:1.6;color:var(--gris)}
+
+  /* --- frase --- */
+  .frase{
+    position:relative;text-align:center;
+    padding-block:clamp(4.8rem,16vw,7rem);
+  }
+  .frase::before{
+    content:"";position:absolute;inset:-3rem -1.6rem;z-index:-1;
+    background:radial-gradient(52% 46% at 50% 50%, rgba(235,205,206,.30), rgba(195,214,230,.16) 52%, transparent 78%);
+  }
+  .frase .linea{
+    display:block;font-family:var(--serif);
+    font-size:clamp(1.6rem,7.4vw,2.35rem);
+    font-weight:400;line-height:1.4;letter-spacing:-.016em;
+    opacity:0;transform:translate3d(0,22px,0);
+    transition:opacity 1.7s var(--ease), transform 1.7s var(--ease);
+  }
+  .frase .linea + .linea{margin-top:.5rem;color:var(--azul-hondo)}
+  .frase.visible .linea{opacity:1;transform:translate3d(0,0,0)}
+  .frase.visible .linea:nth-child(2){transition-delay:.85s}
+
+  /* --- abrazo --- */
+  .abrazo{text-align:center}
+  .zona-abrazo{position:relative;display:grid;place-items:center;min-height:14rem}
+  .cara{grid-area:1/1;width:100%;transition:opacity .7s var(--ease), transform .7s var(--ease)}
+  .cara.ida{opacity:0;transform:translate3d(0,-10px,0);pointer-events:none}
+  .cara.espera{opacity:0;transform:translate3d(0,14px,0);pointer-events:none}
+  .cara.espera.llega{opacity:1;transform:translate3d(0,0,0);pointer-events:auto}
+
+  .ondas{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .onda{
+    position:absolute;width:6rem;aspect-ratio:1;border-radius:50%;
+    border:1px solid var(--rosa);opacity:0;
+  }
+  .disparado .onda{animation:abrir 2.5s var(--ease) forwards}
+  .disparado .onda:nth-child(2){animation-delay:.28s}
+  .disparado .onda:nth-child(3){animation-delay:.56s}
+  @keyframes abrir{
+    0%{opacity:.85;transform:scale(.5)}
+    100%{opacity:0;transform:scale(3.6)}
+  }
+
+  .abrazo .grande{
+    font-family:var(--serif);font-size:clamp(1.5rem,6.4vw,2rem);
+    font-weight:400;line-height:1.35;margin-bottom:1.3rem;
+  }
+  .abrazo .texto{color:var(--gris);max-width:23rem;margin:0 auto;font-size:1rem;line-height:1.72}
+  .abrazo .texto + .texto{margin-top:.9rem}
+
+  .reiniciar{
+    display:inline-block;margin-top:2.6rem;
+    background:none;border:0;cursor:pointer;
+    font-family:var(--sans);font-size:.7rem;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;text-indent:.22em;
+    color:var(--gris-claro);
+    padding:.7rem 1rem;-webkit-tap-highlight-color:transparent;
+    transition:color .4s var(--ease);
+  }
+  .reiniciar:hover{color:var(--tinta)}
+  .reiniciar:focus-visible{outline:2px solid var(--azul-hondo);outline-offset:3px;border-radius:8px}
+
+  .pie{
+    text-align:center;color:var(--gris-claro);
+    font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;text-indent:.24em;
+    padding-bottom:calc(env(safe-area-inset-bottom) + 3rem);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;animation-iteration-count:1 !important;
+      animation-delay:0s !important;transition-duration:.01ms !important;transition-delay:0s !important;
+    }
+    .marca,.saludo,.portada .p1,.portada .p2,.portada .boton{opacity:1}
+    .rev{opacity:1;transform:none}
+    .filete{transform:scaleX(1)}
+    .frase .linea{opacity:1;transform:none}
+    .anillo,.nucleo{transform:scale(.92)}
+    .palabra.pal-in{opacity:1}
+    .onda{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="fondo" aria-hidden="true"></div>
+
+<!-- ---------------- portada ---------------- -->
+<section class="portada" id="portada">
+  <span class="marca" aria-hidden="true"></span>
+  <h1 class="saludo">Hola, Emil. 🤍</h1>
+  <p class="p1">Sé que hoy estás cansado…</p>
+  <p class="p2">Así que preparé un pequeño lugar para que descanses un poquito.</p>
+  <button class="boton" id="entrar" type="button">Entrar</button>
+</section>
+
+<!-- ---------------- experiencia ---------------- -->
+<main class="pagina" id="pagina" aria-hidden="true">
+
+  <section class="banda">
+    <h2 class="titulo rev">Emil's Reset</h2>
+    <div class="filete" id="filete" aria-hidden="true"></div>
+    <p class="subtitulo rev d1">Un pequeño recordatorio de que no tienes que cargar con todo hoy.</p>
+  </section>
+
+  <section class="banda respiro">
+    <div class="respirador rev" aria-hidden="true">
+      <span class="anillo a1"></span>
+      <span class="anillo a2"></span>
+      <span class="nucleo"></span>
+      <span class="palabra pal-in">Inhala</span>
+      <span class="palabra pal-out">Suelta</span>
+    </div>
+    <p class="rev d1">
+      Inhala.<br>
+      Respira.<br>
+      <span class="suave">Suelta un poquito de todo lo que te pesa.</span>
+    </p>
+  </section>
+
+  <section class="banda">
+    <article class="carta rev">
+      <p>Amor, sé que hoy estás cansado y que has tenido un día pesado, así que quería dejarte un pequeño detalle para recordarte que no tienes que cargar con todo tú solo.</p>
+      <p>Ojalá esto te saque aunque sea una sonrisita y te haga sentir un poquito de lo mucho que te quiero.</p>
+      <p>Ahora solo descansa, respira y date permiso de no hacer nada por un rato.</p>
+      <p>Yo estoy aquí contigo, incluso en esos días en los que todo pesa un poquito más.</p>
+      <p class="cierre">Te quiero muchísimo, Emil. 🤍</p>
+    </article>
+  </section>
+
+  <section class="banda">
+    <p class="rotulo rev">Prescription for today</p>
+    <div class="receta">
+      <div class="item rev">
+        <span class="ico" aria-hidden="true">☕</span>
+        <div><h3>Algo que te guste tomar</h3><p>Porque mereces un pequeño descanso.</p></div>
+      </div>
+      <div class="item rev d1">
+        <span class="ico" aria-hidden="true">🎧</span>
+        <div><h3>Una canción</h3><p>Ponla, cierra los ojos y olvídate del mundo por unos minutos.</p></div>
+      </div>
+      <div class="item rev d2">
+        <span class="ico" aria-hidden="true">🫂</span>
+        <div><h3>Un abrazo</h3><p>Canjeable por uno mío cuando nos veamos.</p></div>
+      </div>
+      <div class="item rev d3">
+        <span class="ico" aria-hidden="true">😴</span>
+        <div><h3>Descansar</h3><p>Sin culpa. Hoy también está permitido simplemente descansar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="banda frase" id="frase">
+    <span class="linea">Hoy no tienes que ser fuerte.</span>
+    <span class="linea">Hoy déjame quererte un poquito más.</span>
+  </section>
+
+  <section class="banda abrazo">
+    <div class="zona-abrazo" id="zonaAbrazo">
+      <div class="ondas" aria-hidden="true">
+        <span class="onda"></span><span class="onda"></span><span class="onda"></span>
+      </div>
+
+      <div class="cara" id="caraBoton">
+        <button class="boton" id="pedirAbrazo" type="button">¿Necesitas un abrazo?</button>
+      </div>
+
+      <div class="cara espera" id="caraAbrazo" role="status">
+        <p class="grande">Ven aquí 🫂</p>
+        <p class="texto">No puedo quitarte el cansancio,<br>pero sí puedo recordarte que no estás solo.</p>
+        <p class="texto">Te mando uno enorme.</p>
+        <button class="reiniciar" id="reiniciar" type="button">Volver a empezar</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="pie">Para ti 🤍</p>
+</main>
+
+<script>
+(function () {
+  const cuerpo    = document.body;
+  const portada   = document.getElementById('portada');
+  const pagina    = document.getElementById('pagina');
+  const entrar    = document.getElementById('entrar');
+  const filete    = document.getElementById('filete');
+  const frase     = document.getElementById('frase');
+  const zona      = document.getElementById('zonaAbrazo');
+  const caraBoton = document.getElementById('caraBoton');
+  const caraAbrazo= document.getElementById('caraAbrazo');
+  const pedir     = document.getElementById('pedirAbrazo');
+  const reiniciar = document.getElementById('reiniciar');
+
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revelables = [...document.querySelectorAll('.rev'), filete, frase];
+
+  cuerpo.classList.add('bloqueado');
+
+  /* cada seccion entra al asomarse */
+  const vigia = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('visible');
+      vigia.unobserve(e.target);
+    });
+  }, { threshold: .16, rootMargin: '0px 0px -8% 0px' });
+
+  const observar = () => revelables.forEach((n) => vigia.observe(n));
+
+  /* ---- entrar ---- */
+  entrar.addEventListener('click', () => {
+    portada.classList.add('oculta');
+    portada.setAttribute('aria-hidden', 'true');
+    cuerpo.classList.remove('bloqueado');
+    pagina.classList.add('dentro');
+    pagina.removeAttribute('aria-hidden');
+    observar();
+    // el foco se va al contenido: quien navegue con teclado no queda atras
+    setTimeout(() => {
+      portada.style.display = 'none';
+      pagina.querySelector('.titulo').setAttribute('tabindex', '-1');
+      pagina.querySelector('.titulo').focus({ preventScroll: true });
+    }, quieto ? 0 : 950);
+  });
+
+  /* ---- abrazo ---- */
+  pedir.addEventListener('click', () => {
+    zona.classList.add('disparado');
+    caraBoton.classList.add('ida');
+    setTimeout(() => {
+      caraAbrazo.classList.add('llega');
+      caraAbrazo.focus?.({ preventScroll: true });
+    }, quieto ? 0 : 480);
+  });
+
+  /* ---- volver a empezar ---- */
+  reiniciar.addEventListener('click', () => {
+    // deja el abrazo listo para repetirse
+    zona.classList.remove('disparado');
+    caraBoton.classList.remove('ida');
+    caraAbrazo.classList.remove('llega');
+
+    // rebobina las entradas de cada seccion
+    revelables.forEach((n) => n.classList.remove('visible'));
+
+    // y vuelve a la portada desde el principio
+    pagina.classList.remove('dentro');
+    pagina.setAttribute('aria-hidden', 'true');
+    window.scrollTo(0, 0);
+    cuerpo.classList.add('bloqueado');
+
+    portada.style.display = '';
+    // reinicia las animaciones de la portada forzando un reflujo
+    portada.classList.remove('oculta');
+    void portada.offsetWidth;
+    portada.removeAttribute('aria-hidden');
+    entrar.focus({ preventScroll: true });
+  });
+})();
+</script>
+</body>
+</html>

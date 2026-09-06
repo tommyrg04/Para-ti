@@ -11,6 +11,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 |---|---|---|---|
 | emil    | `/emil/index.html`    | https://tommyrg04.github.io/Para-ti/emil/    | ✅ lista |
 | emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/Para-ti/emil/corazon/ | ✅ lista |
+| emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -84,6 +85,30 @@ luciérnagas, misma tipografía cursiva y misma firma.
 - Contador desbocado bajo «Como crece mi amor por ti» (`requestAnimationFrame`,
   +1.400–4.200 por frame, no se detiene nunca).
 
+### emil / reset — «Emil's Reset», vertical (iPhone), **interactiva**
+Un rincón para un día pesado. **Rompe con la estética de las otras dos a propósito:**
+aquí es luz de día — crema, azul muy suave, gris cálido y detalles rosados, con mucho
+aire. Registro Apple/Aesop, no nocturno.
+
+- **Tipografía del sistema, sin CDN**: `ui-serif` (New York en iPhone) para las frases
+  que pesan y `-apple-system` (SF Pro) para el resto. En regular, nunca negrita: la
+  serif en bold rompía el tono.
+- **Portada** a pantalla completa con entrada escalonada (0.3 → 2.75 s) y botón «Entrar».
+  Al pulsarlo se funde y escala levemente hacia la experiencia.
+- **Secciones**: cabecera, respiración, carta, «Prescription for today» (4 tarjetas),
+  frase especial y abrazo final.
+- **Círculo de respiración**: ciclo de 11 s (4.4 s inhalar, 1.3 s sostener, 4.4 s soltar).
+  Dentro del círculo alterna «Inhala» / «Suelta», sincronizado con el mismo ciclo por
+  desfase de keyframes, sin JS.
+- **Entradas por sección** con `IntersectionObserver` (umbral 0.16). Al reiniciar se
+  vuelve a observar todo, así que la segunda vuelta se anima igual que la primera.
+- **Abrazo**: tres ondas concéntricas que se expanden y el mensaje que sube; después
+  aparece «Volver a empezar», que rebobina el abrazo, limpia las entradas, sube el
+  scroll y devuelve la portada reiniciando sus animaciones con un reflujo forzado.
+- Auras de color con degradados radiales sobre una capa fija con deriva de 46 s.
+  Nada de filtros.
+- Foco gestionado al entrar y al reiniciar; `:focus-visible` en todos los botones.
+
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
 
@@ -139,6 +164,14 @@ Todo cuenta desde el **toque**, no desde la carga.
 | **8.4** | Aparece «Como crece mi amor por ti» |
 | **8.6** | El contador se dispara y ya no para |
 | **9.8** | Firma |
+
+## Comprobado en Chromium (390×844)
+
+La página del reset se verificó con Playwright pulsando todos los botones: sin errores
+JS, sin desbordamiento horizontal, las 9 secciones revelan, el abrazo aparece, el
+reinicio deja los cuatro estados limpios (portada visible, scroll arriba, botón de
+abrazo repuesto, entradas rebobinadas) y la segunda vuelta funciona igual. También
+pasada con `prefers-reduced-motion: reduce`.
 
 ---
 
