@@ -15,6 +15,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
+| evianny | `/evianny/index.html` | https://tommyrg04.github.io/Para-ti/evianny/ | ✅ lista |
 
 Como cada carpeta tiene `index.html`, la URL funciona sin escribir el nombre del archivo.
 
@@ -109,6 +110,38 @@ aire. Registro Apple/Aesop, no nocturno.
   Nada de filtros.
 - Foco gestionado al entrar y al reiniciar; `:focus-visible` en todos los botones.
 
+### evianny — «EVIANNY.EXE», amistad, mobile-first
+
+Único directorio con **varios archivos**: `index.html`, `estilos.css`, `guion.js`.
+Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
+
+> **Por qué no React/Vite/Tailwind:** se pidió «si el proyecto ya tiene estructura,
+> respétala». Este repo es estático sobre GitHub Pages y su regla nº 1 es sin build.
+> Meter Vite obligaría a compilar en cada ajuste y a publicar un `dist/`. Se conservó
+> el espíritu del encargo con archivos separados y todo el contenido repetitivo en
+> arrays al principio de `guion.js` (`PALABRAS`, `ENCANTAN`, `HITOS`, `MEDIDORES`,
+> `SALIDAS_EXE`, `KIT`, `RECUERDOS`) — para cambiar textos se tocan solo esos arrays.
+
+- **Sin módulos ES**: abriendo por `file://` el navegador bloquea los `import` por CORS,
+  así que `guion.js` es un IIFE cargado con `<script src>`.
+- Paleta: blanco cálido `#FBFBFA`, gris claro, negro suave `#131315`, carbón y un solo
+  acento azul frío `#6D8CA8`. Tipografía del sistema (SF Pro en iPhone) + monoespaciada
+  para la parte de «sistema operativo».
+- **11 tramos**: intro con puerta, mensaje inicial, «Tú y yo somos…» (píldoras),
+  «Cosas que me encantan» (8 tarjetas desplegables), expediente (línea de tiempo),
+  EVIANNY.EXE (panel con medidores y consola), kit de emergencia (4 desplegables),
+  recuerdos (cápsulas), sección oscura, mensaje final y tarjeta de amistad.
+- **Plegables con altura medida**: se lee `scrollHeight` real en vez de un `max-height`
+  inventado, así la animación acaba exacta y se recalcula al girar el teléfono.
+- La consola de `.exe` nunca repite el mensaje anterior seguido y guarda 4 líneas como tope.
+- **Música opcional**: botón «♪» discreto que intenta `cancion.mp3`. Con `preload="none"`
+  no se toca la red hasta que ella pulsa; si el archivo no existe, el botón se marca
+  «sin música aún» y no vuelve a intentarlo. **Para añadir música: dejar `cancion.mp3`
+  dentro de `/evianny/`.** Nunca suena sola.
+- Barra de progreso de lectura arriba, con el scroll leído en `requestAnimationFrame`.
+- «Volver a empezar» rebobina todo: cierra plegables y tarjeta, limpia la consola,
+  quita las entradas, sube el scroll y reinicia la intro con un reflujo forzado.
+
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
 
@@ -165,7 +198,17 @@ Todo cuenta desde el **toque**, no desde la carga.
 | **8.6** | El contador se dispara y ya no para |
 | **9.8** | Firma |
 
-## Comprobado en Chromium (390×844)
+## Comprobado en Chromium
+
+**`/evianny/`** — 390×844, además de 1280×900 y 412×915. Sin errores de consola.
+Se generan los 9+8+5+5+4+9 elementos desde los arrays; «Entrar», «sigue ↓», las
+tarjetas (abrir/cerrar/reabrir), los 4 botones del kit, «Ejecutar Evianny.exe»
+(6 pulsaciones → tope de 4 líneas y un solo cursor), «Guardar esta amistad» y
+«Volver a empezar» funcionan. Cero desbordamiento horizontal en los tres anchos y
+ningún elemento se sale de la pantalla. Segunda vuelta completa verificada.
+También pasada con `prefers-reduced-motion: reduce`.
+
+**`/emil/reset/`** — 390×844
 
 La página del reset se verificó con Playwright pulsando todos los botones: sin errores
 JS, sin desbordamiento horizontal, las 9 secciones revelan, el abrazo aparece, el
