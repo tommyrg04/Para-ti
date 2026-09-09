@@ -159,17 +159,28 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 La más corta de todas: **no tiene scroll**, cabe entera en la pantalla.
 
 - **Ramo de lirios orientales rosas dibujado en SVG**, siguiendo la foto de referencia:
-  6 lirios abiertos, 4 capullos cerrados, hojas largas, verde plumoso y papel de envolver.
+  8 lirios abiertos, 5 capullos, hojas, verde plumoso y papel de envolver. Florece de
+  dentro hacia fuera al cargar.
 - **Cómo se construye un lirio**: 3 tépalos externos estrechos por detrás y 3 internos
   anchos delante. Cada tépalo interno lleva tres capas — la forma pálida, una banda rosa
   que se apaga hacia la punta y las pecas de la garganta. El color no está en el relleno
   del pétalo sino en la banda: así es como se ve un lirio oriental de verdad. Encima,
   6 estambres curvos con antera color óxido, pistilo y garganta verde.
 - **El papel** son lóbulos redondeados generados por `panel(ángulo, largo, ancho)` desde
-  el punto del atado. Dos intentos fallidos quedaron descartados: un embudo de lados
-  rectos parecía papiroflexia, y unos lóbulos frontales largos formaban un corazón rosa
-  en medio del ramo. Ahora va corto y tenue, enmarcando por detrás.
-- 545 nodos SVG. Sin filtros: todo el volumen sale de degradados y solapamiento.
+  el punto del atado. Va corto y tenue, como un cuello por detrás.
+- **Relleno entre flores**: hojas apretadas detrás del ramo más un degradado radial que
+  se desvanece. Es lo que evita que los huecos entre tépalos se vean blancos.
+- 740 nodos SVG. Sin filtros: todo el volumen sale de degradados y solapamiento.
+
+**Intentos descartados, para no repetirlos:**
+1. Rosas de elipses sueltas y planas: se leían como margaritas de clipart. Se arregló
+   dando a cada flor una masa de fondo y coronas de pétalos superpuestos con degradado.
+2. Un óvalo de sombra colocado antes que las flores: se veía como un disco pálido
+   rodeando el ramo.
+3. Papel como embudo de lados rectos: parecía papiroflexia.
+4. Lóbulos de papel frontales y largos: formaban un corazón rosa en mitad del ramo.
+5. Un óvalo verde oscuro **sólido** detrás: con las rosas funcionaba porque lo tapaban,
+   pero los lirios dejan huecos entre tépalos y se veía un manchón negro.
 - **Techo conocido**: esto es una ilustración, no una foto. Si en algún momento se quiere
   el aspecto literal de la fotografía, el camino es incrustar una imagen propia en
   `/emil/nota/`, no seguir refinando el SVG.
