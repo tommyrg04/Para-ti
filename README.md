@@ -155,15 +155,21 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 - «Volver a empezar» rebobina todo: cierra plegables y tarjeta, limpia la consola,
   quita las entradas, sube el scroll y reinicia la intro con un reflujo forzado.
 
-### emil / nota — tarjeta de florería, una sola pantalla
+### emil / nota — tarjeta de florería con ramo, una sola pantalla
 La más corta de todas: **no tiene scroll**, cabe entera en la pantalla.
 
-- Formato de nota de florista: papel crema, serif del sistema (New York en iPhone)
-  para el mensaje y sans letterspaced para los rótulos.
-- Empieza cerrada, con un sello rosa que respira y «toca para abrir». Al tocar, las dos
-  caras se cruzan y las tres líneas entran escalonadas (0.35 / 1.15 / 1.95 s), luego el
-  filete y la firma.
-- Un solo archivo, un `addEventListener`. Sin scroll, sin reinicio: se lee y ya.
+- **Ramo dibujado en SVG** con los tonos de las fotos de referencia: 30 flores en cúpula
+  (rosas de jardín y alguna hortensia azul), hojas asomando, caja pálida y cintas que se
+  trazan con `stroke-dasharray`. Florece de dentro hacia fuera al cargar.
+- **Cómo se construye una rosa**: una masa circular de fondo y cuatro coronas de pétalos
+  que se solapan, cada pétalo con un degradado radial propio. La masa es lo que evita que
+  se vean huecos entre pétalos — sin ella la flor se leía como una margarita plana.
+- 923 nodos SVG. Sin filtros: todo el volumen sale de degradados y solapamiento.
+- Formato de nota de florista: papel crema, serif del sistema (New York en iPhone) para
+  el mensaje y sans letterspaced para los rótulos.
+- Al tocar «toca para abrir la nota», las dos caras se cruzan y las tres líneas entran
+  escalonadas (0.3 / 1.05 / 1.8 s), luego el filete y la firma (2.9 s).
+- Un solo archivo. Sin scroll, sin reinicio: se lee y ya.
 
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
