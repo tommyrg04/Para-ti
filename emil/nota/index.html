@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF6F3">
+<title>Para Emil</title>
+<style>
+  :root{
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Helvetica, Arial, sans-serif;
+    --papel:#FFFDFC;
+    --fondo:#FAF6F3;
+    --tinta:#2A2522;
+    --gris:#867C76;
+    --tenue:#AFA49D;
+    --rosa:#C58E96;
+    --rosa-suave:#FBF0F0;
+    --linea:rgba(42,37,34,.10);
+    --ease:cubic-bezier(.22,.68,.24,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+
+  body{
+    min-height:100svh;
+    display:grid;place-items:center;
+    padding:calc(env(safe-area-inset-top) + 1.5rem) 1.4rem calc(env(safe-area-inset-bottom) + 1.5rem);
+    background:
+      radial-gradient(58% 34% at 78% 6%, #FDF1F1 0%, rgba(253,241,241,0) 70%),
+      radial-gradient(52% 32% at 14% 92%, #F6F0EC 0%, rgba(246,240,236,0) 72%),
+      var(--fondo);
+    background-attachment:fixed;
+    font-family:var(--sans);
+    color:var(--tinta);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .tarjeta{
+    width:100%;max-width:24rem;
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-radius:22px;
+    padding:2.4rem 1.8rem 2rem;
+    text-align:center;
+    box-shadow:0 1px 2px rgba(42,37,34,.04), 0 34px 64px -38px rgba(42,37,34,.4);
+    opacity:0;transform:translate3d(0,14px,0);
+    animation:entrar 1.2s var(--ease) .15s forwards;
+  }
+  @keyframes entrar{to{opacity:1;transform:none}}
+
+  .etiqueta{
+    font-size:.6rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+    text-indent:.3em;color:var(--tenue);
+  }
+
+  /* las dos caras se apilan: la cerrada se va, la nota llega */
+  .caras{display:grid;margin:2.1rem 0 1.6rem}
+  .cara{grid-area:1/1;transition:opacity .7s var(--ease), transform .7s var(--ease)}
+
+  .cara--cerrada{display:flex;flex-direction:column;align-items:center;gap:1.6rem}
+  .abierta .cara--cerrada{opacity:0;transform:translate3d(0,-10px,0);pointer-events:none}
+
+  .sello{
+    width:52px;height:52px;border-radius:50%;
+    background:radial-gradient(circle at 40% 34%, #FFF 0%, var(--rosa-suave) 46%, #F0D9DB 100%);
+    border:1px solid #F0DDDE;
+    display:grid;place-items:center;
+    box-shadow:0 10px 24px -14px rgba(197,142,150,.9);
+    will-change:transform;
+    animation:respirar 3.4s ease-in-out infinite;
+  }
+  .sello::after{
+    content:"";width:9px;height:9px;border-radius:50%;background:var(--rosa);opacity:.75;
+  }
+  @keyframes respirar{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+
+  .pista{
+    font-family:var(--sans);
+    font-size:.62rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--rosa);background:var(--rosa-suave);
+    border:1px solid #F0DDDE;border-radius:999px;
+    min-height:44px;padding:.7rem 1.2rem;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:transform .4s var(--ease), background .3s var(--ease);
+  }
+  .pista:active{transform:scale(.96)}
+  .pista:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+
+  .cara--nota{opacity:0;transform:translate3d(0,12px,0);pointer-events:none}
+  .abierta .cara--nota{opacity:1;transform:none;pointer-events:auto}
+
+  .linea{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(1.06rem,4.4vw,1.24rem);
+    line-height:1.62;letter-spacing:-.006em;
+    opacity:0;transform:translate3d(0,10px,0);
+    transition:opacity 1s var(--ease), transform 1s var(--ease);
+  }
+  .linea + .linea{margin-top:.85rem}
+  .l2{color:var(--gris)}
+  .abierta .l1{opacity:1;transform:none;transition-delay:.35s}
+  .abierta .l2{opacity:1;transform:none;transition-delay:1.15s}
+  .abierta .l3{opacity:1;transform:none;transition-delay:1.95s}
+
+  .regla{
+    height:1px;background:var(--linea);
+    transform:scaleX(0);transition:transform 1.1s var(--ease) 2.7s;
+  }
+  .abierta .regla{transform:scaleX(1)}
+
+  .firma{
+    margin-top:1.4rem;
+    font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+    text-indent:.28em;color:var(--tenue);
+    opacity:0;transition:opacity 1.2s var(--ease) 3.1s;
+  }
+  .abierta .firma{opacity:1}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;animation-iteration-count:1 !important;
+      animation-delay:0s !important;transition-duration:.01ms !important;transition-delay:0s !important;
+    }
+    .tarjeta{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<article class="tarjeta" id="tarjeta">
+  <p class="etiqueta">Para Emil</p>
+
+  <div class="caras">
+    <div class="cara cara--cerrada">
+      <span class="sello" aria-hidden="true"></span>
+      <button class="pista" id="abrir" type="button">toca para abrir</button>
+    </div>
+
+    <div class="cara cara--nota" role="note">
+      <p class="linea l1">No esperé una fecha especial: eres tú.</p>
+      <p class="linea l2">Este es el último detalle que te mando siendo lo que somos hoy.</p>
+      <p class="linea l3">El próximo llega cuando seas mi novio.</p>
+    </div>
+  </div>
+
+  <div class="regla" aria-hidden="true"></div>
+  <p class="firma">— Tom</p>
+</article>
+
+<script>
+document.getElementById('abrir').addEventListener('click', function () {
+  document.getElementById('tarjeta').classList.add('abierta');
+  this.blur();
+});
+</script>
+</body>
+</html>

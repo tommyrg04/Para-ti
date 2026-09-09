@@ -12,6 +12,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil    | `/emil/index.html`    | https://tommyrg04.github.io/Para-ti/emil/    | ✅ lista |
 | emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/Para-ti/emil/corazon/ | ✅ lista |
 | emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
+| emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -153,6 +154,16 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 - Barra de progreso de lectura arriba, con el scroll leído en `requestAnimationFrame`.
 - «Volver a empezar» rebobina todo: cierra plegables y tarjeta, limpia la consola,
   quita las entradas, sube el scroll y reinicia la intro con un reflujo forzado.
+
+### emil / nota — tarjeta de florería, una sola pantalla
+La más corta de todas: **no tiene scroll**, cabe entera en la pantalla.
+
+- Formato de nota de florista: papel crema, serif del sistema (New York en iPhone)
+  para el mensaje y sans letterspaced para los rótulos.
+- Empieza cerrada, con un sello rosa que respira y «toca para abrir». Al tocar, las dos
+  caras se cruzan y las tres líneas entran escalonadas (0.35 / 1.15 / 1.95 s), luego el
+  filete y la firma.
+- Un solo archivo, un `addEventListener`. Sin scroll, sin reinicio: se lee y ya.
 
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
