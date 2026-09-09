@@ -148,31 +148,54 @@
 <article class="tarjeta" id="tarjeta">
   <p class="etiqueta">Para Emil</p>
 
-  <svg class="ramo" viewBox="0 0 300 284" role="img" aria-label="Un ramo de rosas y hortensias en una caja con cintas">
+  <svg class="ramo" viewBox="0 0 300 300" role="img" aria-label="Un ramo de lirios rosas envuelto en papel">
     <defs>
-      <linearGradient id="caja" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%"  stop-color="#F2F6F9"/>
-        <stop offset="55%" stop-color="#DFE8EF"/>
-        <stop offset="100%" stop-color="#C9D6E1"/>
+      <!-- papel de envolver -->
+      <linearGradient id="papelA" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#FBD8E3"/>
+        <stop offset="55%"  stop-color="#F5B9CD"/>
+        <stop offset="100%" stop-color="#E99CB6"/>
       </linearGradient>
-      <linearGradient id="rimel" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#FBFDFE"/>
-        <stop offset="100%" stop-color="#DDE7EE"/>
+      <linearGradient id="papelB" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#FFEAF1"/>
+        <stop offset="100%" stop-color="#F7C8D9"/>
       </linearGradient>
-      <linearGradient id="verde" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#A7C9AF"/>
-        <stop offset="100%" stop-color="#5A8467"/>
+
+      <!-- tépalo: pálido en el borde, es la banda de dentro la que da el color -->
+      <linearGradient id="tepalo" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%"   stop-color="#F6B9CE"/>
+        <stop offset="35%"  stop-color="#FDE4EE"/>
+        <stop offset="80%"  stop-color="#FFF4F8"/>
+        <stop offset="100%" stop-color="#FFFFFF"/>
       </linearGradient>
-      <linearGradient id="cintaG" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="#F6DCDF"/>
-        <stop offset="100%" stop-color="#E3B9C0"/>
+      <linearGradient id="banda" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%"   stop-color="#D9407A"/>
+        <stop offset="45%"  stop-color="#EE7BA4"/>
+        <stop offset="100%" stop-color="#F7B3CB" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="tepaloAtras" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%"   stop-color="#E9A0BC"/>
+        <stop offset="60%"  stop-color="#F9D6E4"/>
+        <stop offset="100%" stop-color="#FFF1F6"/>
+      </linearGradient>
+
+      <linearGradient id="capullo" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%"   stop-color="#B9CE87"/>
+        <stop offset="55%"  stop-color="#E4EDC8"/>
+        <stop offset="100%" stop-color="#F6E9EC"/>
+      </linearGradient>
+      <linearGradient id="tallo" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%"   stop-color="#4B7A4E"/>
+        <stop offset="100%" stop-color="#88AF6B"/>
       </linearGradient>
     </defs>
 
-    <g id="hojas"></g>
-    <g id="cajaG"></g>
+    <g id="papelAtras"></g>
+    <g id="verde"></g>
+    <g id="capullos"></g>
     <g id="flores"></g>
-    <g id="cintas"></g>
+    <g id="papelFrente"></g>
+    <g id="base"></g>
   </svg>
 
   <div class="caras">
@@ -198,137 +221,179 @@
   const el = (t, a) => { const n = document.createElementNS(NS, t); for (const k in (a||{})) if (a[k]!=null) n.setAttribute(k, a[k]); return n; };
   const rnd = (a, b) => a + Math.random() * (b - a);
 
-  /* paletas de las fotos: rosa fuerte, blush, crema, durazno y un lila suave */
-  const PALETAS = [
-    { fuera:'#D9738C', dentro:'#F0A6B8', claro:'#FCDCE4', ojo:'#C25E79' },
-    { fuera:'#E9A0B2', dentro:'#F8C8D5', claro:'#FFEDF1', ojo:'#D9899C' },
-    { fuera:'#E8CDA6', dentro:'#F7E6CE', claro:'#FFF9F0', ojo:'#D9B98C' },
-    { fuera:'#E5A47E', dentro:'#F6CDB2', claro:'#FEEBDD', ojo:'#D18C63' },
-    { fuera:'#D592AF', dentro:'#EFBFD2', claro:'#FBE6EF', ojo:'#C077A0' },
-    { fuera:'#EADCC8', dentro:'#F8EFE3', claro:'#FFFCF8', ojo:'#DCC9AF' },
-  ];
-  const AZULES = ['#A9BDE8', '#BCCBEE', '#93A9DC'];
+  const papelAtras  = document.querySelector('#papelAtras');
+  const verde       = document.querySelector('#verde');
+  const capullos    = document.querySelector('#capullos');
+  const flores      = document.querySelector('#flores');
+  const papelFrente = document.querySelector('#papelFrente');
+  const base        = document.querySelector('#base');
 
-  const hojas  = document.querySelector('#hojas');
-  const cajaG  = document.querySelector('#cajaG');
-  const flores = document.querySelector('#flores');
-  const cintas = document.querySelector('#cintas');
+  const pieza = (nodo, retraso) => {
+    nodo.setAttribute('class', 'pieza');
+    nodo.style.setProperty('--d', retraso + 's');
+    return nodo;
+  };
 
-  /* --- rosa de jardín: masa de fondo y cuatro coronas que se solapan ---
-     la masa evita que se vean huecos entre pétalos, que es lo que hacía
-     que pareciera una margarita en vez de una rosa --- */
-  const defs = document.querySelector('defs');
-  PALETAS.forEach((pal, i) => {
-    const g = el('radialGradient', { id: 'pet' + i, cx: '40%', cy: '32%' });
-    g.appendChild(el('stop', { offset: '0%',   'stop-color': pal.claro }));
-    g.appendChild(el('stop', { offset: '58%',  'stop-color': pal.dentro }));
-    g.appendChild(el('stop', { offset: '100%', 'stop-color': pal.fuera }));
-    defs.appendChild(g);
-  });
+  /* ---------- tépalo del lirio ----------
+     Tres capas: la forma pálida, la banda rosa que se apaga hacia la punta
+     y las pecas de la garganta. El color no está en el relleno del pétalo
+     sino en la banda: así es como se ve en un lirio oriental de verdad. */
+  const D_TEPALO = 'M0,0 C 7,-9 11,-21 10,-35 C 9.5,-47 5,-58 0,-68 C -5,-58 -9.5,-47 -10,-35 C -11,-21 -7,-9 0,0 Z';
+  const D_TEPALO_EXT = 'M0,0 C 6,-9 9.5,-21 8.5,-36 C 8,-48 4,-59 0,-70 C -4,-59 -8,-48 -8.5,-36 C -9.5,-21 -6,-9 0,0 Z';
+  const D_BANDA  = 'M0,-2 C 4,-12 6,-25 5.4,-39 C 5,-48 2.6,-54 0,-59 C -2.6,-54 -5,-48 -5.4,-39 C -6,-25 -4,-12 0,-2 Z';
 
-  function rosa(x, y, R, idx, retraso) {
-    const pal = PALETAS[idx];
-    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${rnd(0,72).toFixed(0)})` });
+  function tepalo(angulo, externo) {
+    const g = el('g', { transform: `rotate(${angulo})` });
+    g.appendChild(el('path', { d: externo ? D_TEPALO_EXT : D_TEPALO,
+                               fill: externo ? 'url(#tepaloAtras)' : 'url(#tepalo)' }));
+    if (!externo) {
+      g.appendChild(el('path', { d: D_BANDA, fill: 'url(#banda)', opacity: .92 }));
+      // nervadura
+      g.appendChild(el('path', { d: 'M0,-4 C 1,-20 1,-40 0,-58', stroke: '#F9D3E0',
+                                 'stroke-width': .8, fill: 'none', opacity: .7 }));
+      // pecas de la garganta
+      [[2.6,-11],[-2.9,-15],[3.4,-19],[-1.8,-23],[2.6,-27],[-3.4,-30],[1.4,-34]].forEach(([px,py]) => {
+        g.appendChild(el('ellipse', { cx: px, cy: py, rx: .95, ry: 1.5, fill: '#C0356B', opacity: .62 }));
+      });
+    }
+    return g;
+  }
+
+  /* ---------- un lirio abierto ---------- */
+  function lirio(x, y, s, giro, retraso) {
+    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'flor' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
 
-    // masa: el cuerpo de la flor, para que no se transparente el fondo
-    g.appendChild(el('circle', { r: (R * .92).toFixed(2), fill: pal.fuera }));
+    // 3 tépalos externos, algo más estrechos y por detrás
+    for (let i = 0; i < 3; i++) g.appendChild(tepalo(i * 120 + 60, true));
+    // 3 internos, anchos, con banda y pecas
+    for (let i = 0; i < 3; i++) g.appendChild(tepalo(i * 120, false));
 
-    [ { n:9, r:R*.66, rx:R*.40, ry:R*.50, giro:0   },
-      { n:7, r:R*.46, rx:R*.34, ry:R*.43, giro:26  },
-      { n:5, r:R*.27, rx:R*.27, ry:R*.34, giro:52  },
-      { n:3, r:R*.11, rx:R*.19, ry:R*.24, giro:12  } ].forEach((c) => {
-      for (let k = 0; k < c.n; k++) {
-        const a = (k / c.n) * Math.PI * 2 + c.giro * Math.PI / 180;
-        const px = Math.cos(a) * c.r, py = Math.sin(a) * c.r;
-        g.appendChild(el('ellipse', {
-          cx: px.toFixed(2), cy: py.toFixed(2),
-          rx: c.rx.toFixed(2), ry: c.ry.toFixed(2),
-          fill: `url(#pet${idx})`,
-          transform: `rotate(${(a * 180 / Math.PI + 90).toFixed(1)} ${px.toFixed(2)} ${py.toFixed(2)})`,
-        }));
-      }
-    });
-    g.appendChild(el('circle', { r: (R*.11).toFixed(2), fill: pal.ojo, opacity: .8 }));
+    // 6 estambres curvos con antera color óxido
+    for (let i = 0; i < 6; i++) {
+      const e = el('g', { transform: `rotate(${i * 60 + 30})` });
+      e.appendChild(el('path', { d: 'M0,-2 C 3,-14 7,-25 12,-32', stroke: '#F7EEDF',
+                                 'stroke-width': 1.1, fill: 'none' }));
+      e.appendChild(el('ellipse', { cx: 13.4, cy: -33.4, rx: 1.8, ry: 4.4, fill: '#B4622F',
+                                    transform: 'rotate(38 13.4 -33.4)' }));
+      g.appendChild(e);
+    }
+    // pistilo
+    g.appendChild(el('path', { d: 'M0,-2 C -1,-14 -1.5,-26 -1.5,-36', stroke: '#F3F7E4',
+                               'stroke-width': 1.5, fill: 'none' }));
+    g.appendChild(el('ellipse', { cx: -1.5, cy: -37.5, rx: 2.4, ry: 1.9, fill: '#CBAF63' }));
+    // garganta verde
+    g.appendChild(el('circle', { r: 4.6, fill: '#C3D68C', opacity: .9 }));
+    g.appendChild(el('circle', { r: 2.2, fill: '#8FB55E', opacity: .8 }));
+
     wrap.appendChild(g);
     return wrap;
   }
 
-  /* --- hortensia: ramillete de flores de cuatro pétalos --- */
-  function hortensia(x, y, R, retraso) {
-    const wrap = el('g', { transform: `translate(${x},${y})` });
+  /* ---------- capullo cerrado ---------- */
+  function capullo(x, y, s, giro, retraso) {
+    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'flor' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
-    for (let i = 0; i < 6; i++) {
-      const a = i * 1.05, r = R * .55 * Math.sqrt((i + .4) / 6);
-      const fx = Math.cos(a) * r, fy = Math.sin(a) * r * .85;
-      const col = AZULES[i % AZULES.length];
-      for (let k = 0; k < 4; k++) {
-        g.appendChild(el('ellipse', {
-          cx: fx.toFixed(2), cy: fy.toFixed(2),
-          rx: (R*.14).toFixed(2), ry: (R*.2).toFixed(2), fill: col,
-          transform: `rotate(${k*90+20} ${fx.toFixed(2)} ${fy.toFixed(2)}) translate(0 ${(-R*.17).toFixed(2)})`,
-        }));
-      }
-      g.appendChild(el('circle', { cx: fx.toFixed(2), cy: fy.toFixed(2), r: (R*.05).toFixed(2), fill: '#F3F6DE' }));
+    g.appendChild(el('path', {
+      d: 'M0,0 C 6,-7 8.5,-22 6,-38 C 4.6,-47 2,-52 0,-55 C -2,-52 -4.6,-47 -6,-38 C -8.5,-22 -6,-7 0,0 Z',
+      fill: 'url(#capullo)',
+    }));
+    g.appendChild(el('path', { d: 'M0,-3 C 1.4,-20 1.4,-40 0,-53', stroke: '#A9C079',
+                               'stroke-width': .9, fill: 'none', opacity: .65 }));
+    g.appendChild(el('path', { d: 'M-3.4,-8 C -4.4,-24 -3.4,-40 -1.6,-50', stroke: '#C8D9A2',
+                               'stroke-width': .7, fill: 'none', opacity: .5 }));
+    wrap.appendChild(g);
+    return wrap;
+  }
+
+  /* ---------- hoja larga ---------- */
+  function hoja(x, y, giro, s, retraso) {
+    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
+    const g = el('g', { class: 'hoja' });
+    g.style.setProperty('--d', retraso.toFixed(2) + 's');
+    g.appendChild(el('path', { d: 'M0,0 C 16,-9 44,-11 66,-2 C 44,7 16,9 0,0 Z', fill: '#4E7C4B' }));
+    g.appendChild(el('path', { d: 'M3,0 C 22,-2 46,-3 62,-2', stroke: '#7FA96C',
+                               'stroke-width': .8, fill: 'none', opacity: .55 }));
+    wrap.appendChild(g);
+    return wrap;
+  }
+
+  /* ---------- verde plumoso, como el de la foto ---------- */
+  function pluma(x, y, giro, s, retraso) {
+    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
+    const g = el('g', { class: 'hoja' });
+    g.style.setProperty('--d', retraso.toFixed(2) + 's');
+    g.appendChild(el('path', { d: 'M0,0 C 14,-4 30,-6 46,-4', stroke: '#6F9A5E',
+                               'stroke-width': 1.2, fill: 'none' }));
+    for (let i = 0; i < 11; i++) {
+      const t = i / 10, px = t * 46, py = -4 * Math.sin(t * 2.2), l = 8 - t * 3.5;
+      g.appendChild(el('path', {
+        d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.35).toFixed(1)},${(-l).toFixed(1)}`,
+        stroke: '#84B06C', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .85,
+      }));
+      g.appendChild(el('path', {
+        d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.3).toFixed(1)},${(l*.85).toFixed(1)}`,
+        stroke: '#78A563', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .8,
+      }));
     }
     wrap.appendChild(g);
     return wrap;
   }
 
-  function hoja(x, y, giro, tam, retraso) {
-    const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${tam})` });
-    const g = el('g', { class: 'hoja' });
-    g.style.setProperty('--d', retraso.toFixed(2) + 's');
-    g.appendChild(el('path', { d: 'M0,0 C 11,-11 32,-13 48,-2 C 32,9 11,11 0,0 Z', fill: 'url(#verde)' }));
-    wrap.appendChild(g);
-    return wrap;
+  /* ---------- papel de envolver ----------
+     Lóbulos redondeados que nacen del atado y se abren en abanico.
+     Un embudo de lados rectos parecía papiroflexia, no papel crepé. */
+  function panel(ang, largo, ancho, relleno, op) {
+    const a = ang * Math.PI / 180;
+    const ux = Math.cos(a), uy = Math.sin(a);      // hacia la punta
+    const nx = -uy, ny = ux;                        // perpendicular
+    const px = 150 + ux * largo, py = 262 + uy * largo;
+    const m = 0.55;
+    const d = `M150,262 `
+      + `C ${(150 + ux*largo*m + nx*ancho).toFixed(1)},${(262 + uy*largo*m + ny*ancho).toFixed(1)} `
+      +   `${(px + nx*ancho*0.5).toFixed(1)},${(py + ny*ancho*0.5).toFixed(1)} `
+      +   `${px.toFixed(1)},${py.toFixed(1)} `
+      + `C ${(px - nx*ancho*0.5).toFixed(1)},${(py - ny*ancho*0.5).toFixed(1)} `
+      +   `${(150 + ux*largo*m - nx*ancho).toFixed(1)},${(262 + uy*largo*m - ny*ancho).toFixed(1)} `
+      +   `150,262 Z`;
+    return el('path', { d, fill: relleno, opacity: op });
   }
 
-  /* --- la caja --- */
-  function pieza(nodo, retraso) {
-    nodo.setAttribute('class', 'pieza');
-    nodo.style.setProperty('--d', retraso + 's');
-    return nodo;
-  }
-  cajaG.appendChild(pieza(el('path', {
-    d: 'M88,200 L212,200 L203,268 Q202,275 195,275 L105,275 Q98,275 97,268 Z',
-    fill: 'url(#caja)',
-  }), 0.15));
-  cajaG.appendChild(pieza(el('ellipse', { cx: 150, cy: 200, rx: 62, ry: 11, fill: 'url(#rimel)' }), 0.2));
+  [[-158,116,40,'url(#papelA)',.9,.12],[-130,132,44,'url(#papelB)',.85,.16],
+   [-90,140,46,'url(#papelB)',.8,.2],[-50,132,44,'url(#papelB)',.85,.24],
+   [-22,116,40,'url(#papelA)',.9,.28]]
+    .forEach(([a,l,w,f,o,d]) => papelAtras.appendChild(pieza(panel(a,l,w,f,o), d)));
 
-  /* hojas asomando por detrás */
-  [[68,180,-26,.68],[232,178,198,.66],[86,202,-6,.56],[214,200,190,.56],[150,90,-96,.46],[104,120,-52,.42],[196,118,224,.42]]
-    .forEach(([x,y,g,t], i) => hojas.appendChild(hoja(x, y, g, t, 0.3 + i*.09)));
+  /* verde asomando por detrás */
+  [[66,158,-30,.66],[236,154,208,.64],[92,198,-14,.56],[212,194,196,.54],[150,80,-92,.46],[110,100,-56,.42],[194,96,236,.42]]
+    .forEach(([x,y,g,t], i) => verde.appendChild(hoja(x, y, g, t, 0.34 + i*.07)));
+  [[78,192,-22,.82],[222,186,202,.78],[108,214,-8,.7]]
+    .forEach(([x,y,g,t], i) => verde.appendChild(pluma(x, y, g, t, 0.5 + i*.1)));
 
-  /* --- la cúpula de flores: del centro hacia afuera --- */
-  const CX = 150, CY = 144, RX = 84, RY = 60;
-  const PHI = Math.PI * (3 - Math.sqrt(5));
-  const puestos = [];
-  for (let i = 0; i < 30; i++) {
-    const q = Math.sqrt((i + .5) / 30);
-    const a = i * PHI;
-    puestos.push({
-      x: CX + Math.cos(a) * RX * q,
-      y: CY + Math.sin(a) * RY * q - q * 8,   // ligera cúpula
-      q, i,
-    });
-  }
-  // de atrás hacia delante, para que las de arriba queden encima
-  puestos.sort((p, q) => p.y - q.y).forEach((p) => {
-    const R = 24 - p.q * 5 + rnd(-1.2, 1.2);
-    const retraso = 0.55 + p.q * .8 + rnd(0, .16);
-    if (p.i % 8 === 3) flores.appendChild(hortensia(p.x, p.y, R * 1.1, retraso));
-    else flores.appendChild(rosa(p.x, p.y, R, p.i % PALETAS.length, retraso));
-  });
+  /* capullos, entre las flores y hacia afuera */
+  [[74,102,-48,.8,1.2],[126,66,-14,.88,1.06],[178,64,14,.88,1.14],[228,102,46,.8,1.3]]
+    .forEach(([x,y,g,s,d]) => capullos.appendChild(capullo(x, y, s, g, d)));
 
-  /* --- cintas que caen de la caja --- */
-  [['M128,220 C 112,246 88,256 62,252', 1.8], ['M172,220 C 190,248 216,260 242,254', 1.95]]
+  /* los lirios: de atrás hacia delante para que se solapen bien */
+  [[92,118,.72,-30,1.0],[210,112,.72,28,1.08],[150,102,.8,2,.88],
+   [200,168,.82,20,.74],[104,166,.92,-14,.62],[152,182,.78,6,.68]]
+    .forEach(([x,y,s,g,d]) => flores.appendChild(lirio(x, y, s, g, d)));
+
+  /* papel por delante, cerrando el cono */
+  [[-112,58,26,1.55],[-68,58,26,1.62]].forEach(([a,l,w,d]) =>
+    papelFrente.appendChild(pieza(panel(a,l,w,'url(#papelA)',.75), d)));
+
+  /* el atado y las cintas */
+  base.appendChild(pieza(el('path', {
+    d: 'M136,258 L164,258 L158,296 L142,296 Z', fill: '#FBEFE6',
+  }), 1.7));
+  [['M144,266 C 130,280 112,288 92,288', 1.85], ['M156,266 C 170,282 190,290 210,290', 1.95]]
     .forEach(([d, ret]) => {
-      const c = el('path', { d, fill: 'none', stroke: 'url(#cintaG)', 'stroke-width': 5,
+      const c = el('path', { d, fill: 'none', stroke: '#EBC3B4', 'stroke-width': 2.2,
                              'stroke-linecap': 'round', class: 'cinta' });
-      cintas.appendChild(c);
+      base.appendChild(c);
       c.style.setProperty('--l', c.getTotalLength());
       c.style.setProperty('--d', ret + 's');
     });

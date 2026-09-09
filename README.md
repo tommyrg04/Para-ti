@@ -158,13 +158,21 @@ Sigue sin build ni dependencias — abriendo el HTML directo funciona igual.
 ### emil / nota — tarjeta de florería con ramo, una sola pantalla
 La más corta de todas: **no tiene scroll**, cabe entera en la pantalla.
 
-- **Ramo dibujado en SVG** con los tonos de las fotos de referencia: 30 flores en cúpula
-  (rosas de jardín y alguna hortensia azul), hojas asomando, caja pálida y cintas que se
-  trazan con `stroke-dasharray`. Florece de dentro hacia fuera al cargar.
-- **Cómo se construye una rosa**: una masa circular de fondo y cuatro coronas de pétalos
-  que se solapan, cada pétalo con un degradado radial propio. La masa es lo que evita que
-  se vean huecos entre pétalos — sin ella la flor se leía como una margarita plana.
-- 923 nodos SVG. Sin filtros: todo el volumen sale de degradados y solapamiento.
+- **Ramo de lirios orientales rosas dibujado en SVG**, siguiendo la foto de referencia:
+  6 lirios abiertos, 4 capullos cerrados, hojas largas, verde plumoso y papel de envolver.
+- **Cómo se construye un lirio**: 3 tépalos externos estrechos por detrás y 3 internos
+  anchos delante. Cada tépalo interno lleva tres capas — la forma pálida, una banda rosa
+  que se apaga hacia la punta y las pecas de la garganta. El color no está en el relleno
+  del pétalo sino en la banda: así es como se ve un lirio oriental de verdad. Encima,
+  6 estambres curvos con antera color óxido, pistilo y garganta verde.
+- **El papel** son lóbulos redondeados generados por `panel(ángulo, largo, ancho)` desde
+  el punto del atado. Dos intentos fallidos quedaron descartados: un embudo de lados
+  rectos parecía papiroflexia, y unos lóbulos frontales largos formaban un corazón rosa
+  en medio del ramo. Ahora va corto y tenue, enmarcando por detrás.
+- 545 nodos SVG. Sin filtros: todo el volumen sale de degradados y solapamiento.
+- **Techo conocido**: esto es una ilustración, no una foto. Si en algún momento se quiere
+  el aspecto literal de la fotografía, el camino es incrustar una imagen propia en
+  `/emil/nota/`, no seguir refinando el SVG.
 - Formato de nota de florista: papel crema, serif del sistema (New York en iPhone) para
   el mensaje y sans letterspaced para los rótulos.
 - Al tocar «toca para abrir la nota», las dos caras se cruzan y las tres líneas entran
