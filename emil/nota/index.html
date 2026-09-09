@@ -150,43 +150,52 @@
 
   <svg class="ramo" viewBox="0 0 300 300" role="img" aria-label="Un ramo de lirios rosas envuelto en papel">
     <defs>
-      <!-- papel de envolver -->
       <linearGradient id="papelA" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%"   stop-color="#FBD8E3"/>
-        <stop offset="55%"  stop-color="#F5B9CD"/>
-        <stop offset="100%" stop-color="#E99CB6"/>
+        <stop offset="55%"  stop-color="#F3B4CA"/>
+        <stop offset="100%" stop-color="#E28FAD"/>
       </linearGradient>
       <linearGradient id="papelB" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%"   stop-color="#FFEAF1"/>
-        <stop offset="100%" stop-color="#F7C8D9"/>
+        <stop offset="100%" stop-color="#F5C0D4"/>
       </linearGradient>
 
-      <!-- tépalo: pálido en el borde, es la banda de dentro la que da el color -->
+      <!-- el pétalo va pálido: el color lo pone la banda de dentro -->
       <linearGradient id="tepalo" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%"   stop-color="#F6B9CE"/>
-        <stop offset="35%"  stop-color="#FDE4EE"/>
-        <stop offset="80%"  stop-color="#FFF4F8"/>
+        <stop offset="0%"   stop-color="#F3A9C4"/>
+        <stop offset="32%"  stop-color="#FBDCE9"/>
+        <stop offset="78%"  stop-color="#FFF3F8"/>
         <stop offset="100%" stop-color="#FFFFFF"/>
       </linearGradient>
       <linearGradient id="banda" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%"   stop-color="#D9407A"/>
-        <stop offset="45%"  stop-color="#EE7BA4"/>
-        <stop offset="100%" stop-color="#F7B3CB" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#CE2E6B"/>
+        <stop offset="18%"  stop-color="#DE3D77"/>
+        <stop offset="55%"  stop-color="#EF7FA8"/>
+        <stop offset="100%" stop-color="#F8B9D0" stop-opacity="0"/>
       </linearGradient>
       <linearGradient id="tepaloAtras" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%"   stop-color="#E9A0BC"/>
-        <stop offset="60%"  stop-color="#F9D6E4"/>
-        <stop offset="100%" stop-color="#FFF1F6"/>
+        <stop offset="0%"   stop-color="#E28FAF"/>
+        <stop offset="58%"  stop-color="#F7CCDF"/>
+        <stop offset="100%" stop-color="#FFEFF5"/>
       </linearGradient>
 
       <linearGradient id="capullo" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%"   stop-color="#B9CE87"/>
-        <stop offset="55%"  stop-color="#E4EDC8"/>
-        <stop offset="100%" stop-color="#F6E9EC"/>
+        <stop offset="0%"   stop-color="#9FBB6E"/>
+        <stop offset="50%"  stop-color="#DCE8BC"/>
+        <stop offset="100%" stop-color="#F7E4EA"/>
       </linearGradient>
-      <linearGradient id="tallo" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%"   stop-color="#4B7A4E"/>
-        <stop offset="100%" stop-color="#88AF6B"/>
+      <linearGradient id="verdeG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#5E8F4E"/>
+        <stop offset="100%" stop-color="#22431F"/>
+      </linearGradient>
+      <radialGradient id="hondo" cx="50%" cy="48%">
+        <stop offset="0%"   stop-color="#2C3D22" stop-opacity=".82"/>
+        <stop offset="58%"  stop-color="#33482A" stop-opacity=".55"/>
+        <stop offset="100%" stop-color="#3C5330" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="cintaG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#F6DCDF"/>
+        <stop offset="100%" stop-color="#DFAFBC"/>
       </linearGradient>
     </defs>
 
@@ -234,164 +243,147 @@
     return nodo;
   };
 
-  /* ---------- tépalo del lirio ----------
-     Tres capas: la forma pálida, la banda rosa que se apaga hacia la punta
-     y las pecas de la garganta. El color no está en el relleno del pétalo
-     sino en la banda: así es como se ve en un lirio oriental de verdad. */
-  const D_TEPALO = 'M0,0 C 7,-9 11,-21 10,-35 C 9.5,-47 5,-58 0,-68 C -5,-58 -9.5,-47 -10,-35 C -11,-21 -7,-9 0,0 Z';
+  /* ---------- tépalo ----------
+     Tres capas: la forma pálida, la banda rosa que se apaga hacia la punta y
+     las pecas de la garganta. El color va en la banda, no en el relleno del
+     pétalo: así se ve un lirio oriental de verdad. */
+  const D_TEPALO     = 'M0,0 C 7,-9 11,-21 10,-35 C 9.5,-47 5,-58 0,-68 C -5,-58 -9.5,-47 -10,-35 C -11,-21 -7,-9 0,0 Z';
   const D_TEPALO_EXT = 'M0,0 C 6,-9 9.5,-21 8.5,-36 C 8,-48 4,-59 0,-70 C -4,-59 -8,-48 -8.5,-36 C -9.5,-21 -6,-9 0,0 Z';
-  const D_BANDA  = 'M0,-2 C 4,-12 6,-25 5.4,-39 C 5,-48 2.6,-54 0,-59 C -2.6,-54 -5,-48 -5.4,-39 C -6,-25 -4,-12 0,-2 Z';
+  const D_BANDA      = 'M0,-2 C 4.4,-12 6.4,-25 5.8,-39 C 5.4,-48 2.8,-54 0,-59 C -2.8,-54 -5.4,-48 -5.8,-39 C -6.4,-25 -4.4,-12 0,-2 Z';
 
   function tepalo(angulo, externo) {
     const g = el('g', { transform: `rotate(${angulo})` });
     g.appendChild(el('path', { d: externo ? D_TEPALO_EXT : D_TEPALO,
                                fill: externo ? 'url(#tepaloAtras)' : 'url(#tepalo)' }));
     if (!externo) {
-      g.appendChild(el('path', { d: D_BANDA, fill: 'url(#banda)', opacity: .92 }));
-      // nervadura
-      g.appendChild(el('path', { d: 'M0,-4 C 1,-20 1,-40 0,-58', stroke: '#F9D3E0',
-                                 'stroke-width': .8, fill: 'none', opacity: .7 }));
-      // pecas de la garganta
-      [[2.6,-11],[-2.9,-15],[3.4,-19],[-1.8,-23],[2.6,-27],[-3.4,-30],[1.4,-34]].forEach(([px,py]) => {
-        g.appendChild(el('ellipse', { cx: px, cy: py, rx: .95, ry: 1.5, fill: '#C0356B', opacity: .62 }));
-      });
+      g.appendChild(el('path', { d: D_BANDA, fill: 'url(#banda)', opacity: .95 }));
+      g.appendChild(el('path', { d: 'M0,-4 C 1,-20 1,-40 0,-58', stroke: '#FADAE6',
+                                 'stroke-width': .8, fill: 'none', opacity: .75 }));
+      [[2.8,-11],[-3,-15],[3.6,-19],[-2,-23],[2.8,-27],[-3.6,-30],[1.6,-34],[-2.4,-37]]
+        .forEach(([px,py]) => g.appendChild(el('ellipse', {
+          cx: px, cy: py, rx: 1, ry: 1.6, fill: '#A81E56', opacity: .6 })));
     }
     return g;
   }
 
-  /* ---------- un lirio abierto ---------- */
   function lirio(x, y, s, giro, retraso) {
     const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'flor' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
-
-    // 3 tépalos externos, algo más estrechos y por detrás
     for (let i = 0; i < 3; i++) g.appendChild(tepalo(i * 120 + 60, true));
-    // 3 internos, anchos, con banda y pecas
     for (let i = 0; i < 3; i++) g.appendChild(tepalo(i * 120, false));
-
-    // 6 estambres curvos con antera color óxido
     for (let i = 0; i < 6; i++) {
       const e = el('g', { transform: `rotate(${i * 60 + 30})` });
       e.appendChild(el('path', { d: 'M0,-2 C 3,-14 7,-25 12,-32', stroke: '#F7EEDF',
                                  'stroke-width': 1.1, fill: 'none' }));
-      e.appendChild(el('ellipse', { cx: 13.4, cy: -33.4, rx: 1.8, ry: 4.4, fill: '#B4622F',
+      e.appendChild(el('ellipse', { cx: 13.4, cy: -33.4, rx: 1.8, ry: 4.4, fill: '#A9552A',
                                     transform: 'rotate(38 13.4 -33.4)' }));
       g.appendChild(e);
     }
-    // pistilo
     g.appendChild(el('path', { d: 'M0,-2 C -1,-14 -1.5,-26 -1.5,-36', stroke: '#F3F7E4',
                                'stroke-width': 1.5, fill: 'none' }));
-    g.appendChild(el('ellipse', { cx: -1.5, cy: -37.5, rx: 2.4, ry: 1.9, fill: '#CBAF63' }));
-    // garganta verde
-    g.appendChild(el('circle', { r: 4.6, fill: '#C3D68C', opacity: .9 }));
-    g.appendChild(el('circle', { r: 2.2, fill: '#8FB55E', opacity: .8 }));
-
+    g.appendChild(el('ellipse', { cx: -1.5, cy: -37.5, rx: 2.4, ry: 1.9, fill: '#C7A65C' }));
+    g.appendChild(el('circle', { r: 4.8, fill: '#C6D98F', opacity: .92 }));
+    g.appendChild(el('circle', { r: 2.2, fill: '#8CB35B', opacity: .85 }));
     wrap.appendChild(g);
     return wrap;
   }
 
-  /* ---------- capullo cerrado ---------- */
   function capullo(x, y, s, giro, retraso) {
     const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'flor' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
     g.appendChild(el('path', {
       d: 'M0,0 C 6,-7 8.5,-22 6,-38 C 4.6,-47 2,-52 0,-55 C -2,-52 -4.6,-47 -6,-38 C -8.5,-22 -6,-7 0,0 Z',
-      fill: 'url(#capullo)',
-    }));
-    g.appendChild(el('path', { d: 'M0,-3 C 1.4,-20 1.4,-40 0,-53', stroke: '#A9C079',
-                               'stroke-width': .9, fill: 'none', opacity: .65 }));
-    g.appendChild(el('path', { d: 'M-3.4,-8 C -4.4,-24 -3.4,-40 -1.6,-50', stroke: '#C8D9A2',
-                               'stroke-width': .7, fill: 'none', opacity: .5 }));
+      fill: 'url(#capullo)' }));
+    g.appendChild(el('path', { d: 'M0,-3 C 1.4,-20 1.4,-40 0,-53', stroke: '#9DB868',
+                               'stroke-width': .9, fill: 'none', opacity: .6 }));
     wrap.appendChild(g);
     return wrap;
   }
 
-  /* ---------- hoja larga ---------- */
   function hoja(x, y, giro, s, retraso) {
     const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'hoja' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
-    g.appendChild(el('path', { d: 'M0,0 C 16,-9 44,-11 66,-2 C 44,7 16,9 0,0 Z', fill: '#4E7C4B' }));
-    g.appendChild(el('path', { d: 'M3,0 C 22,-2 46,-3 62,-2', stroke: '#7FA96C',
-                               'stroke-width': .8, fill: 'none', opacity: .55 }));
+    g.appendChild(el('path', { d: 'M0,0 C 16,-9 44,-11 66,-2 C 44,7 16,9 0,0 Z', fill: 'url(#verdeG)' }));
+    g.appendChild(el('path', { d: 'M3,0 C 22,-2 46,-3 62,-2', stroke: '#8CB877',
+                               'stroke-width': .8, fill: 'none', opacity: .5 }));
     wrap.appendChild(g);
     return wrap;
   }
 
-  /* ---------- verde plumoso, como el de la foto ---------- */
   function pluma(x, y, giro, s, retraso) {
     const wrap = el('g', { transform: `translate(${x},${y}) rotate(${giro}) scale(${s})` });
     const g = el('g', { class: 'hoja' });
     g.style.setProperty('--d', retraso.toFixed(2) + 's');
-    g.appendChild(el('path', { d: 'M0,0 C 14,-4 30,-6 46,-4', stroke: '#6F9A5E',
+    g.appendChild(el('path', { d: 'M0,0 C 14,-4 30,-6 46,-4', stroke: '#5C8A4C',
                                'stroke-width': 1.2, fill: 'none' }));
     for (let i = 0; i < 11; i++) {
       const t = i / 10, px = t * 46, py = -4 * Math.sin(t * 2.2), l = 8 - t * 3.5;
-      g.appendChild(el('path', {
-        d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.35).toFixed(1)},${(-l).toFixed(1)}`,
-        stroke: '#84B06C', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .85,
-      }));
-      g.appendChild(el('path', {
-        d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.3).toFixed(1)},${(l*.85).toFixed(1)}`,
-        stroke: '#78A563', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .8,
-      }));
+      g.appendChild(el('path', { d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.35).toFixed(1)},${(-l).toFixed(1)}`,
+        stroke: '#6E9C58', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .85 }));
+      g.appendChild(el('path', { d: `M${px.toFixed(1)},${py.toFixed(1)} l ${(l*.3).toFixed(1)},${(l*.85).toFixed(1)}`,
+        stroke: '#628E4F', 'stroke-width': .9, 'stroke-linecap': 'round', fill: 'none', opacity: .8 }));
     }
     wrap.appendChild(g);
     return wrap;
   }
 
-  /* ---------- papel de envolver ----------
-     Lóbulos redondeados que nacen del atado y se abren en abanico.
-     Un embudo de lados rectos parecía papiroflexia, no papel crepé. */
+  /* ---------- papel: lóbulos redondeados desde el atado ---------- */
   function panel(ang, largo, ancho, relleno, op) {
     const a = ang * Math.PI / 180;
-    const ux = Math.cos(a), uy = Math.sin(a);      // hacia la punta
-    const nx = -uy, ny = ux;                        // perpendicular
+    const ux = Math.cos(a), uy = Math.sin(a), nx = -uy, ny = ux, m = .55;
     const px = 150 + ux * largo, py = 262 + uy * largo;
-    const m = 0.55;
     const d = `M150,262 `
-      + `C ${(150 + ux*largo*m + nx*ancho).toFixed(1)},${(262 + uy*largo*m + ny*ancho).toFixed(1)} `
-      +   `${(px + nx*ancho*0.5).toFixed(1)},${(py + ny*ancho*0.5).toFixed(1)} `
-      +   `${px.toFixed(1)},${py.toFixed(1)} `
-      + `C ${(px - nx*ancho*0.5).toFixed(1)},${(py - ny*ancho*0.5).toFixed(1)} `
-      +   `${(150 + ux*largo*m - nx*ancho).toFixed(1)},${(262 + uy*largo*m - ny*ancho).toFixed(1)} `
-      +   `150,262 Z`;
+      + `C ${(150+ux*largo*m+nx*ancho).toFixed(1)},${(262+uy*largo*m+ny*ancho).toFixed(1)} `
+      +   `${(px+nx*ancho*.5).toFixed(1)},${(py+ny*ancho*.5).toFixed(1)} ${px.toFixed(1)},${py.toFixed(1)} `
+      + `C ${(px-nx*ancho*.5).toFixed(1)},${(py-ny*ancho*.5).toFixed(1)} `
+      +   `${(150+ux*largo*m-nx*ancho).toFixed(1)},${(262+uy*largo*m-ny*ancho).toFixed(1)} 150,262 Z`;
     return el('path', { d, fill: relleno, opacity: op });
   }
-
-  [[-158,116,40,'url(#papelA)',.9,.12],[-130,132,44,'url(#papelB)',.85,.16],
-   [-90,140,46,'url(#papelB)',.8,.2],[-50,132,44,'url(#papelB)',.85,.24],
-   [-22,116,40,'url(#papelA)',.9,.28]]
+  [[-162,104,34,'url(#papelA)',.8,.12],[-134,116,38,'url(#papelB)',.75,.16],
+   [-90,124,40,'url(#papelB)',.7,.2],[-46,116,38,'url(#papelB)',.75,.24],
+   [-18,104,34,'url(#papelA)',.8,.28]]
     .forEach(([a,l,w,f,o,d]) => papelAtras.appendChild(pieza(panel(a,l,w,f,o), d)));
 
-  /* verde asomando por detrás */
-  [[66,158,-30,.66],[236,154,208,.64],[92,198,-14,.56],[212,194,196,.54],[150,80,-92,.46],[110,100,-56,.42],[194,96,236,.42]]
-    .forEach(([x,y,g,t], i) => verde.appendChild(hoja(x, y, g, t, 0.34 + i*.07)));
-  [[78,192,-22,.82],[222,186,202,.78],[108,214,-8,.7]]
-    .forEach(([x,y,g,t], i) => verde.appendChild(pluma(x, y, g, t, 0.5 + i*.1)));
+  /* verde alrededor */
+  [[54,162,-32,.84],[246,158,210,.82],[74,200,-14,.72],[226,196,194,.7],
+   [150,76,-92,.58],[98,106,-58,.52],[202,102,238,.52],[122,72,-78,.46],[180,70,256,.46]]
+    .forEach(([x,y,g,t], i) => verde.appendChild(hoja(x, y, g, t, 0.32 + i*.06)));
+  [[68,192,-24,.86],[232,186,204,.82],[102,216,-8,.74]]
+    .forEach(([x,y,g,t], i) => verde.appendChild(pluma(x, y, g, t, 0.5 + i*.09)));
 
-  /* capullos, entre las flores y hacia afuera */
-  [[74,102,-48,.8,1.2],[126,66,-14,.88,1.06],[178,64,14,.88,1.14],[228,102,46,.8,1.3]]
+  /* masa oscura detrás del ramo: sin ella los huecos entre flores se ven
+     blancos y el ramo parece recortado y vacío */
+  verde.appendChild(pieza(el('ellipse', {
+    cx: 150, cy: 144, rx: 80, ry: 58, fill: 'url(#hondo)' }), 0.3));
+
+  /* hojas apretadas por detrás: el relleno natural entre flores */
+  [[104,150,-14,.5],[196,146,192,.48],[128,120,-34,.44],[172,118,214,.44],
+   [150,158,-4,.46],[118,176,-24,.4],[182,172,204,.4]]
+    .forEach(([x,y,g,t], i) => verde.appendChild(hoja(x, y, g, t, 0.34 + i*.05)));
+
+  /* capullos hacia afuera */
+  [[84,98,-44,.7,1.25],[128,74,-14,.76,1.12],[174,72,12,.76,1.18],
+   [218,96,40,.7,1.3],[150,62,0,.64,1.36]]
     .forEach(([x,y,g,s,d]) => capullos.appendChild(capullo(x, y, s, g, d)));
 
-  /* los lirios: de atrás hacia delante para que se solapen bien */
-  [[92,118,.72,-30,1.0],[210,112,.72,28,1.08],[150,102,.8,2,.88],
-   [200,168,.82,20,.74],[104,166,.92,-14,.62],[152,182,.78,6,.68]]
+  /* lirios: de atrás hacia delante, solapándose para formar masa */
+  [[88,116,.62,-34,1.0],[212,110,.62,32,1.06],[150,92,.66,2,.92],
+   [66,168,.52,-46,1.14],[236,164,.52,44,1.2],
+   [112,152,.78,-16,.7],[192,148,.74,18,.76],[150,174,.72,4,.64]]
     .forEach(([x,y,s,g,d]) => flores.appendChild(lirio(x, y, s, g, d)));
 
-  /* papel por delante, cerrando el cono */
-  [[-112,58,26,1.55],[-68,58,26,1.62]].forEach(([a,l,w,d]) =>
-    papelFrente.appendChild(pieza(panel(a,l,w,'url(#papelA)',.75), d)));
+  /* papel por delante */
+  [[-114,52,22,1.55],[-66,52,22,1.62]].forEach(([a,l,w,d]) =>
+    papelFrente.appendChild(pieza(panel(a,l,w,'url(#papelA)',.7), d)));
 
-  /* el atado y las cintas */
-  base.appendChild(pieza(el('path', {
-    d: 'M136,258 L164,258 L158,296 L142,296 Z', fill: '#FBEFE6',
-  }), 1.7));
-  [['M144,266 C 130,280 112,288 92,288', 1.85], ['M156,266 C 170,282 190,290 210,290', 1.95]]
+  /* atado y cintas */
+  base.appendChild(pieza(el('path', { d: 'M136,256 L164,256 L158,296 L142,296 Z', fill: '#FBEFE6' }), 1.7));
+  [['M144,264 C 130,278 112,288 92,288', 1.85], ['M156,264 C 170,280 190,290 210,290', 1.95]]
     .forEach(([d, ret]) => {
-      const c = el('path', { d, fill: 'none', stroke: '#EBC3B4', 'stroke-width': 2.2,
+      const c = el('path', { d, fill: 'none', stroke: 'url(#cintaG)', 'stroke-width': 2.4,
                              'stroke-linecap': 'round', class: 'cinta' });
       base.appendChild(c);
       c.style.setProperty('--l', c.getTotalLength());
