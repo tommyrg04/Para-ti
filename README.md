@@ -204,6 +204,13 @@ Página traída ya hecha desde fuera y subida tal cual: **no se tocó ni un text
 - Fuentes del sistema (Georgia / Times / serif), `100svh` y `safe-area-inset` para iPhone.
 - Con `prefers-reduced-motion: reduce` los números salen directo en su valor final.
 
+### Fuera del sitio: `/qr-emil/`
+La **tarjeta de 55×80 mm con el QR** que lleva a `/emil/nosotros/`, con tulipanes,
+para imprimir y meter en una carta. Hay PDF al tamaño exacto, PNG a 300 ppp y una A4
+con 9 para recortar. Dos reglas que no se pueden romper: nada dibujado encima del QR
+ni de su margen blanco, y el QR va en bitmap y no en vectores (a 0,85 mm por módulo
+el rasterizador los deja desiguales). Detalles en `qr-emil/README.md`.
+
 ### Fuera del sitio: `/carpetas/`
 No es una página de regalo — son las **cuatro portadas A4 para imprimir** de la unidad
 de legalizaciones (`portadas.html` + los PNG y el PDF ya exportados). Está en el repo
