@@ -13,7 +13,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/Para-ti/emil/corazon/ | ✅ lista |
 | emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
 | emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
-| emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista |
+| emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista · QR en `/emil/nosotros/qr-emil.png` |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -203,6 +203,11 @@ Página traída ya hecha desde fuera y subida tal cual: **no se tocó ni un text
   desde el disco igual que desde Pages.
 - Fuentes del sistema (Georgia / Times / serif), `100svh` y `safe-area-inset` para iPhone.
 - Con `prefers-reduced-motion: reduce` los números salen directo en su valor final.
+
+### Fuera del sitio: `/carpetas/`
+No es una página de regalo — son las **cuatro portadas A4 para imprimir** de la unidad
+de legalizaciones (`portadas.html` + los PNG y el PDF ya exportados). Está en el repo
+para no perderlas, no para servirlas por Pages. Detalles en `carpetas/README.md`.
 
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.

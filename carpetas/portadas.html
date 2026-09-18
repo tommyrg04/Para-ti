@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><style>
+@font-face{font-family:Bric;src:url('fuentes/BricolageGrotesque-Bold.ttf');font-weight:700}
+@font-face{font-family:Geist;src:url('fuentes/GeistMono-Regular.ttf');font-weight:400}
+@font-face{font-family:Geist;src:url('fuentes/GeistMono-Bold.ttf');font-weight:700}
+@font-face{font-family:Mano;src:url('fuentes/NothingYouCouldDo-Regular.ttf')}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff}
+.hoja{width:1240px;height:1754px;background:#fff;position:relative;overflow:hidden;color:#000}
+.hoja + .hoja{margin-top:40px}
+.capa{position:absolute;inset:0}
+.capa svg{width:100%;height:100%;display:block}
+
+.fila{position:absolute;left:104px;right:104px;top:128px;display:flex;
+      justify-content:space-between;align-items:baseline;
+      font-family:Geist;font-weight:700;font-size:19px;letter-spacing:.26em}
+.linea{position:absolute;left:104px;right:104px;top:176px;height:2px;background:#000}
+
+.chico{position:absolute;left:132px;top:216px;
+       font-family:Geist;font-weight:700;font-size:32px;letter-spacing:.3em}
+
+.estado{position:absolute;left:104px;bottom:150px;
+        font-family:Geist;font-weight:700;font-size:19px;letter-spacing:.26em}
+.linea2{position:absolute;left:104px;right:104px;bottom:198px;height:2px;background:#000}
+
+/* impresión: una carpeta por hoja A4, sin margen del navegador */
+@page{size:A4;margin:0}
+@media print{
+  .hoja + .hoja{margin-top:0}
+  .hoja{break-after:page;page-break-after:always}
+  .hoja:last-child{break-after:auto;page-break-after:auto}
+}
+</style></head><body>
+
+<div class="hoja" id="h1">
+  <div class="capa"><svg id="s1" viewBox="0 0 1240 1754"></svg></div>
+  <div class="fila"><span>UNIDAD DE LEGALIZACIONES</span><span>01 — 04</span></div>
+  <div class="linea"></div>
+  <div class="chico">SOLICITUDES</div>
+  <div class="linea2"></div>
+  <div class="estado">TODO EN ORDEN</div>
+</div>
+
+<div class="hoja" id="h2">
+  <div class="capa"><svg id="s2" viewBox="0 0 1240 1754"></svg></div>
+  <div class="fila"><span>UNIDAD DE LEGALIZACIONES</span><span>02 — 04</span></div>
+  <div class="linea"></div>
+  <div class="chico">SOLICITUDES</div>
+  <div class="linea2"></div>
+  <div class="estado">EN PROCESO</div>
+</div>
+
+<div class="hoja" id="h3">
+  <div class="capa"><svg id="s3" viewBox="0 0 1240 1754"></svg></div>
+  <div class="fila"><span>UNIDAD DE LEGALIZACIONES</span><span>03 — 04</span></div>
+  <div class="linea"></div>
+  <div class="chico">SOLICITUDES</div>
+  <div class="linea2"></div>
+  <div class="estado">REQUIERE ATENCIÓN</div>
+</div>
+
+<div class="hoja" id="h4">
+  <div class="capa"><svg id="s4" viewBox="0 0 1240 1754"></svg></div>
+  <div class="fila"><span>UNIDAD DE LEGALIZACIONES</span><span>04 — 04</span></div>
+  <div class="linea"></div>
+  <div class="chico">RÉCORD DE NOTAS</div>
+  <div class="linea2"></div>
+  <div class="estado">PAPELES EN MANO</div>
+</div>
+
+<script src="kit.js"></script>
+<script>
+Promise.all([
+  document.fonts.load('34px Mano'),
+  document.fonts.load('58px Mano'),
+  document.fonts.load('700 156px Bric'),
+]).then(() => document.fonts.ready).then(() => {
+
+  const PAGS = [
+    { id:'s1', palabra:'TRABAJADAS', gesto:'circulo', tira:'DESPACHADA',
+      pega:['ESTADO','LISTO'], casillas:[0,1,2], marca:'cheque', frases:[
+        [150, 712, -4, '¡LISTO!', 54, true],
+        [672, 666, 3, 'Una menos', 34, false],
+        [228, 876, -2, 'Firmado, sellado y olvidado', 34, true],
+        [700, 996, 2, 'Chao, que te vaya bien', 34, false],
+        [268, 1116, -3, 'Next!', 46, true],
+    ]},
+    { id:'s2', palabra:'PENDIENTES', gesto:'subrayado', tira:'EN CURSO',
+      pega:['ESTADO','50%'], casillas:[0], marca:'flecha', frases:[
+        [150, 712, -4, 'Voy en camino…', 50, true],
+        [648, 666, 3, 'Dame chance', 34, false],
+        [228, 876, -2, 'Mañana sin falta (?)', 34, true],
+        [700, 996, 2, 'Ya casi… casi casi', 34, false],
+        [268, 1116, -3, 'Está en veremos', 42, true],
+    ]},
+    { id:'s3', palabra:'RETENIDAS', gesto:'circulo', tira:'RETENIDA',
+      pega:['ESTADO','STOP'], casillas:[], marca:'admiracion', frases:[
+        [150, 712, -4, '¡ALTO AHÍ!', 52, true],
+        [648, 666, 3, '¿Y la firma?', 34, false],
+        [228, 876, -2, 'Nadie sabe, nadie supo', 34, true],
+        [700, 996, 2, 'Se busca: un documento', 34, false],
+        [268, 1116, -3, 'Esto no cuadra', 42, true],
+    ]},
+    { id:'s4', palabra:'DOCUMENTOS', gesto:'subrayado', tira:'RÉCORD DE NOTAS',
+      pega:['ESTADO','COPIA'], casillas:[0,1], marca:'flecha', frases:[
+        [150, 712, -4, '¡Con todo y notas!', 50, true],
+        [630, 666, 3, 'Récord incluido', 34, false],
+        [228, 876, -2, 'Original, copia y copia', 34, true],
+        [700, 996, 2, 'No mires el promedio', 34, false],
+        [268, 1116, -3, 'Sí, esa nota existe', 42, true],
+    ]},
+  ];
+
+  /* ---- la palabra grande va en SVG: así la tinta y el óvalo usan la misma
+         medida y el trazo deja de cortar las letras ---- */
+  const IZQ = 190, TOPE_IZQ = 108, TOPE_DER = 1132, TINTA_ARRIBA = 340;
+  const medir = document.createElement('canvas').getContext('2d');
+
+  function geometria(texto, fs) {
+    medir.font = '700 ' + fs + 'px Bric';
+    const m = medir.measureText(texto);
+    const x0 = IZQ - m.actualBoundingBoxLeft, x1 = IZQ + m.actualBoundingBoxRight;
+    const alto = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    const base = TINTA_ARRIBA + m.actualBoundingBoxAscent;
+    const cy = TINTA_ARRIBA + alto / 2, hy = alto / 2;
+    const ry = hy + 58;
+    // el óvalo debe seguir libre a la altura de las mayúsculas, no solo en el centro
+    const rx = (x1 - x0) / 2 / Math.sqrt(1 - (hy / ry) * (hy / ry)) + 30;
+    const cx = (x0 + x1) / 2;
+    return { x0, x1, base, cx, cy, rx, ry };
+  }
+
+  // un solo tamaño para las cuatro: el mayor que deje el óvalo dentro del margen
+  let TAM = 156;
+  while (TAM > 90 && PAGS.some(P => {
+    if (P.gesto !== 'circulo') return false;
+    const g = geometria(P.palabra, TAM);
+    return g.cx - g.rx < TOPE_IZQ || g.cx + g.rx > TOPE_DER;
+  })) TAM -= 2;
+
+  PAGS.forEach(P => {
+    const s = document.getElementById(P.id);
+    const g = geometria(P.palabra, TAM);
+
+    const pal = el('text', { x: IZQ, y: g.base, 'font-family':'Bric', 'font-weight':700,
+      'font-size': TAM, 'letter-spacing':'-0.05em', fill:'#000' });
+    pal.textContent = P.palabra;
+    s.appendChild(pal);
+
+    /* el único gesto: marcar la palabra a mano */
+    if (P.gesto === 'circulo') s.appendChild(circuloAmano(g.cx, g.cy, g.rx, g.ry, 7));
+    else s.appendChild(subrayado(g.x0 - 6, g.x1 + 6, g.base + 34, 9));
+
+    // la marca busca sitio a la derecha; si no cabe, baja debajo del gesto
+    const der = P.gesto === 'circulo' ? g.cx + g.rx : g.x1;
+    const hueco = TOPE_DER - der;
+    const bajo = (P.gesto === 'circulo' ? g.cy + g.ry : g.base + 40) + 66;
+    if (P.marca === 'cheque') {
+      if (hueco >= 130) s.appendChild(cheque(der + 78, g.cy + 62, 1.3));
+      else s.appendChild(cheque(352, bajo, 1.4));
+    } else if (P.marca === 'admiracion') {
+      if (hueco >= 70) s.appendChild(admiracion(der + 46, g.cy + 6, 1.6));
+      else s.appendChild(admiracion(330, bajo, 1.7));
+    } else {
+      if (hueco >= 150) s.appendChild(flechaMano(der + 74, g.base + 32, 1.4, 4));
+      else s.appendChild(flechaMano(340, bajo, 1.5, 4));
+    }
+
+    P.frases.forEach(f => s.appendChild(frase(...f)));
+    s.appendChild(pegatina(1006, 648, -9, P.pega[0], P.pega[1]));
+    s.appendChild(banda(104, 1256, 1032, 78, P.tira));
+    s.appendChild(casillas(106, 1400, 3, P.casillas));
+    s.appendChild(puntos(392, 1412, 1.1));
+    // rótulo vertical en el canto: textura editorial casi gratis
+    const v = el('text', { transform:'translate(1156,1074) rotate(-90)', 'font-family':'Geist',
+      'font-weight':700, 'font-size':17, 'letter-spacing':'6', fill:'#000', opacity:.55 });
+    v.textContent = 'LEGALIZACIONES';
+    s.appendChild(v);
+    s.appendChild(firma(946, 1642, .9));
+  });
+
+  document.body.dataset.listo = '1';
+});
+</script>
+</body></html>
