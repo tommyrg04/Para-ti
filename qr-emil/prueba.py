@@ -1,7 +1,9 @@
 import cv2, numpy as np
 ESPERADO = "https://tommyrg04.github.io/Para-ti/emil/nosotros/"
 
-img = cv2.imread("qr-tarjeta.png", cv2.IMREAD_COLOR)
+import sys
+SAL = sys.argv[1] if len(sys.argv) > 1 else "qr-tarjeta"
+img = cv2.imread(SAL + ".png", cv2.IMREAD_COLOR)
 print("PNG:", img.shape[1], "x", img.shape[0], "px  (55x80 mm a 300 ppp)")
 
 def leer(m):

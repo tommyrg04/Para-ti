@@ -3,7 +3,9 @@ from PIL import Image, ImageDraw
 
 PPP = 300
 A4 = (round(210/25.4*PPP), round(297/25.4*PPP))     # 2480 x 3508
-t = Image.open("qr-tarjeta.png").convert("RGB")
+import sys
+SAL = sys.argv[1] if len(sys.argv) > 1 else "qr-tarjeta"
+t = Image.open(SAL + ".png").convert("RGB")
 COLS, FILAS, HUECO = 3, 3, 46
 
 hoja = Image.new("RGB", A4, "white")
@@ -22,6 +24,6 @@ for f in range(FILAS):
             d.line([(ex + sx*8, ey), (ex + sx*26, ey)], fill=(150,150,150), width=2)
             d.line([(ex, ey + sy*8), (ex, ey + sy*26)], fill=(150,150,150), width=2)
 
-hoja.save("qr-hoja-a4.png", optimize=True)
-hoja.save("qr-hoja-a4.pdf", resolution=PPP)
+hoja.save(SAL.replace("qr-tarjeta", "qr-hoja-a4") + ".png", optimize=True)
+hoja.save(SAL.replace("qr-tarjeta", "qr-hoja-a4") + ".pdf", resolution=PPP)
 print(f"hoja A4 {A4[0]}x{A4[1]} px con {COLS*FILAS} tarjetas de 55x80 mm, margen {mx/PPP*25.4:.0f} mm")
