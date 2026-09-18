@@ -13,6 +13,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (corazón) | `/emil/corazon/index.html` | https://tommyrg04.github.io/Para-ti/emil/corazon/ | ✅ lista |
 | emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
 | emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
+| emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -189,6 +190,19 @@ La más corta de todas: **no tiene scroll**, cabe entera en la pantalla.
 - Al tocar «toca para abrir la nota», las dos caras se cruzan y las tres líneas entran
   escalonadas (0.3 / 1.05 / 1.8 s), luego el filete y la firma (2.9 s).
 - Un solo archivo. Sin scroll, sin reinicio: se lee y ya.
+
+### emil / nosotros — cifras que suben, vertical (iPhone)
+Página traída ya hecha desde fuera y subida tal cual: **no se tocó ni un texto**.
+
+- Va por *beats*: cada toque (o `Espacio` / `Enter` / `→`) pasa al siguiente. Hay un
+  candado de 650 ms para que un toque doble no salte dos.
+- Los números suben contando con easing cúbico — 1 s, o 1,5 s si la cifra pasa de 100.
+- El último beat esconde la pista y le pone `florece` al `body`.
+- **Todo va dentro del archivo**: un `<style>`, un `<script>` sin `src` y el fondo como
+  `data:image/jpeg;base64` (~214 KB). Cero peticiones de red — se abre con doble clic
+  desde el disco igual que desde Pages.
+- Fuentes del sistema (Georgia / Times / serif), `100svh` y `safe-area-inset` para iPhone.
+- Con `prefers-reduced-motion: reduce` los números salen directo en su valor final.
 
 ### imanol, clarett, mama
 Pendientes de subir. `clarett` será **horizontal (PC)**, las otras dos verticales.
