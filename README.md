@@ -14,7 +14,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
 | emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
 | emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista · QR en `/emil/nosotros/qr-emil.png` |
-| emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ⚠️ falta `carino.mp3` |
+| emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ✅ lista, con música |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -210,9 +210,12 @@ La del día que se vieron por primera vez. Misma mecánica que `/emil/nosotros/`
 seis *beats* y cada toque pasa al siguiente. Paleta cálida, al revés que la otra,
 que era noche azul.
 
-- **La música necesita un archivo que aún no está**: `carino.mp3`, al lado del
-  `index.html`. Sin él la página funciona igual — el botón de sonido no aparece y
-  ya está. Ese es el único archivo externo; lo demás va dentro del HTML.
+- **La música** es `carino.mp3`, al lado del `index.html`: 75 s recortados de la
+  canción (del segundo 3 al 78, que es donde arranca de verdad y antes del cambio
+  de sección), 128 kb/s estéreo, 1,2 MB, con un fundido de 2,5 s al final para que
+  el bucle no dé un corte seco. Es el único archivo externo; lo demás va dentro del
+  HTML. Si se borra, la página sigue funcionando: el botón de sonido no aparece y
+  ya está.
 - **No puede sonar sola.** Los navegadores lo prohíben, en iPhone siempre. Arranca
   con el primer toque, el mismo que pasa de beat, y sube de 0 a 0,55 en 2,6 s.
 - **Botón de sonido visible** arriba a la derecha, con un aviso que se va a los 5 s:
