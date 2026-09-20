@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayer</title>
+<style>
+  :root{
+    --tinta:#3A2418;
+    --papel:#FBF3E8;
+    --sol:#E0A05C;
+    --rosa:#C97B72;
+    --tenue:rgba(58,36,24,.52);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:var(--papel);
+    color:var(--tinta);
+    font-family:Georgia,"Times New Roman",serif;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100svh;
+    padding:2rem 1.6rem calc(2rem + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color:transparent;
+    cursor:pointer;
+  }
+
+  /* La luz. Se mueve muy despacio: el dia avanzando, nada mas. */
+  .cielo{
+    position:fixed;inset:-20%;z-index:0;
+    background:
+      radial-gradient(60% 42% at 22% 18%, rgba(224,160,92,.50) 0%, rgba(224,160,92,0) 62%),
+      radial-gradient(64% 48% at 82% 76%, rgba(201,123,114,.42) 0%, rgba(201,123,114,0) 66%),
+      radial-gradient(90% 70% at 50% 50%, rgba(251,243,232,0) 40%, rgba(233,214,192,.55) 100%);
+    will-change:transform;
+    animation:derivar 26s ease-in-out infinite alternate;
+  }
+  @keyframes derivar{
+    from{transform:translate3d(-2.2%,-1.4%,0) scale(1.04)}
+    to  {transform:translate3d(2.6%,1.8%,0) scale(1.10)}
+  }
+
+  .grano{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background-image:url("data:image/png;base64,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");
+    background-size:52px;
+    opacity:.05;mix-blend-mode:multiply;
+  }
+
+  main{position:relative;z-index:2;width:100%;max-width:30rem;text-align:center}
+
+  .beat{
+    position:absolute;left:0;right:0;top:50%;
+    transform:translateY(-50%);
+    opacity:0;visibility:hidden;
+    transition:opacity .9s ease, visibility .9s;
+  }
+  .beat.activo{opacity:1;visibility:visible}
+
+  .linea{
+    font-size:clamp(1.55rem,6.4vw,2.35rem);
+    line-height:1.42;
+    letter-spacing:.005em;
+    opacity:0;transform:translateY(.6rem);
+  }
+  .activo .linea{animation:entrar 1.1s cubic-bezier(.22,.7,.3,1) forwards}
+  .activo .linea:nth-child(2){animation-delay:.85s}
+  .activo .linea:nth-child(3){animation-delay:1.7s}
+  @keyframes entrar{to{opacity:1;transform:none}}
+
+  .suave{color:var(--tenue);font-style:italic}
+
+  /* portada */
+  .beat.portada .grande{
+    display:block;
+    font-size:clamp(3.6rem,19vw,6.4rem);
+    line-height:1;letter-spacing:-.02em;
+  }
+  .beat.portada .bajo{
+    display:block;margin-top:1.1rem;
+    font-size:clamp(1rem,4.2vw,1.2rem);color:var(--tenue);
+  }
+
+  /* cierre */
+  .beat.final .firma{
+    display:block;margin-top:2.6rem;
+    font-size:clamp(.95rem,3.8vw,1.05rem);
+    letter-spacing:.22em;color:var(--tenue);
+  }
+
+  .pista{
+    position:fixed;left:0;right:0;z-index:3;
+    bottom:calc(1.9rem + env(safe-area-inset-bottom));
+    text-align:center;font-size:.82rem;letter-spacing:.2em;
+    color:var(--tenue);font-style:italic;
+    transition:opacity .7s ease;
+  }
+  .pista.oculta{opacity:0}
+
+  /* boton de sonido: tiene que verse, porque si el iPhone esta en
+     silencio la musica no suena y hay que poder enterarse */
+  .sonido{
+    position:fixed;z-index:4;
+    top:calc(1.2rem + env(safe-area-inset-top));
+    right:calc(1.2rem + env(safe-area-inset-right));
+    width:2.9rem;height:2.9rem;border-radius:50%;
+    border:1px solid rgba(58,36,24,.22);
+    background:rgba(251,243,232,.72);
+    display:none;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--tinta);
+    transition:opacity .4s ease;
+  }
+  .sonido.visible{display:flex}
+  .sonido svg{width:1.15rem;height:1.15rem;display:block}
+  .sonido .tachado{display:none}
+  .sonido.callado .onda{display:none}
+  .sonido.callado .tachado{display:block}
+  .sonido .aviso{
+    position:absolute;right:calc(100% + .55rem);top:50%;
+    transform:translateY(-50%);
+    white-space:nowrap;font-family:Georgia,serif;font-style:italic;
+    font-size:.78rem;color:var(--tenue);
+    transition:opacity .6s ease;
+  }
+  .sonido .aviso.ido{opacity:0}
+
+  @media (prefers-reduced-motion: reduce){
+    .cielo{animation:none}
+    .beat{transition-duration:.01ms}
+    .activo .linea{animation-duration:.01ms;animation-delay:0s}
+  }
+</style>
+</head>
+<body>
+
+<div class="cielo"></div>
+<div class="grano"></div>
+
+<main>
+  <section class="beat portada activo">
+    <span class="grande">Ayer</span>
+    <span class="bajo">por fin</span>
+  </section>
+
+  <section class="beat">
+    <p class="linea">Te vi por primera vez</p>
+    <p class="linea suave">y no me pareció la primera.</p>
+  </section>
+
+  <section class="beat">
+    <p class="linea">Hicimos cosas normales.</p>
+    <p class="linea suave">Ninguna lo fue.</p>
+  </section>
+
+  <section class="beat">
+    <p class="linea">Se me fue el día entero</p>
+    <p class="linea suave">y no me di cuenta.</p>
+  </section>
+
+  <section class="beat">
+    <p class="linea">No era el plan.</p>
+    <p class="linea suave">Eras tú.</p>
+  </section>
+
+  <section class="beat final">
+    <p class="linea">Ya no tengo que imaginarme nada.</p>
+    <span class="firma">— TOM</span>
+  </section>
+</main>
+
+<div class="pista" id="pista">toca para continuar</div>
+
+<button class="sonido" id="sonido" aria-label="Silenciar la música">
+  <span class="aviso" id="aviso">si no la oyes, quita el silencio del teléfono</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z" fill="currentColor" stroke="none"/>
+    <g class="onda"><path d="M15.4 9.3a3.6 3.6 0 0 1 0 5.4"/><path d="M17.9 6.8a7 7 0 0 1 0 10.4"/></g>
+    <path class="tachado" d="M16 9.5l5 5M21 9.5l-5 5"/>
+  </svg>
+</button>
+
+<audio id="musica" src="carino.mp3" loop preload="auto"></audio>
+
+<script>
+(function(){
+  var beats = Array.prototype.slice.call(document.querySelectorAll('.beat'));
+  var pista = document.getElementById('pista');
+  var boton = document.getElementById('sonido');
+  var aviso = document.getElementById('aviso');
+  var musica = document.getElementById('musica');
+  var i = 0, bloqueado = false, sonando = false, hayMusica = true;
+
+  /* Si el mp3 no está, la página tiene que seguir funcionando igual:
+     se esconde el botón y no se intenta reproducir nada. */
+  musica.addEventListener('error', function(){ hayMusica = false; boton.classList.remove('visible'); });
+
+  function subirVolumen(){
+    var t0 = null, dur = 2600;
+    musica.volume = 0;
+    function paso(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      musica.volume = 0.55 * p * p;
+      if (p < 1) requestAnimationFrame(paso);
+    }
+    requestAnimationFrame(paso);
+  }
+
+  function encender(){
+    if (!hayMusica || sonando) return;
+    var intento = musica.play();
+    if (intento && intento.catch) intento.catch(function(){ /* el navegador dijo que no */ });
+    sonando = true;
+    boton.classList.add('visible');
+    setTimeout(function(){ aviso.classList.add('ido'); }, 5200);
+    subirVolumen();
+  }
+
+  function mostrar(n){
+    beats.forEach(function(b){ b.classList.remove('activo'); });
+    beats[n].classList.add('activo');
+    if (n === beats.length - 1) pista.classList.add('oculta');
+  }
+
+  function avanzar(){
+    encender();
+    if (bloqueado || i >= beats.length - 1) return;
+    bloqueado = true;
+    i++;
+    mostrar(i);
+    setTimeout(function(){ bloqueado = false; }, 900);
+  }
+
+  boton.addEventListener('click', function(e){
+    e.stopPropagation();
+    musica.muted = !musica.muted;
+    boton.classList.toggle('callado', musica.muted);
+    boton.setAttribute('aria-label', musica.muted ? 'Poner la música' : 'Silenciar la música');
+  });
+
+  mostrar(0);
+  document.addEventListener('click', avanzar);
+  document.addEventListener('keydown', function(e){
+    if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight'){ e.preventDefault(); avanzar(); }
+  });
+})();
+</script>
+</body>
+</html>

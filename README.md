@@ -14,6 +14,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (reset)   | `/emil/reset/index.html`   | https://tommyrg04.github.io/Para-ti/emil/reset/   | ✅ lista |
 | emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
 | emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista · QR en `/emil/nosotros/qr-emil.png` |
+| emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ⚠️ falta `carino.mp3` |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -203,6 +204,24 @@ Página traída ya hecha desde fuera y subida tal cual: **no se tocó ni un text
   desde el disco igual que desde Pages.
 - Fuentes del sistema (Georgia / Times / serif), `100svh` y `safe-area-inset` para iPhone.
 - Con `prefers-reduced-motion: reduce` los números salen directo en su valor final.
+
+### emil / el día — «Ayer», vertical (iPhone), con música
+La del día que se vieron por primera vez. Misma mecánica que `/emil/nosotros/`:
+seis *beats* y cada toque pasa al siguiente. Paleta cálida, al revés que la otra,
+que era noche azul.
+
+- **La música necesita un archivo que aún no está**: `carino.mp3`, al lado del
+  `index.html`. Sin él la página funciona igual — el botón de sonido no aparece y
+  ya está. Ese es el único archivo externo; lo demás va dentro del HTML.
+- **No puede sonar sola.** Los navegadores lo prohíben, en iPhone siempre. Arranca
+  con el primer toque, el mismo que pasa de beat, y sube de 0 a 0,55 en 2,6 s.
+- **Botón de sonido visible** arriba a la derecha, con un aviso que se va a los 5 s:
+  si el iPhone está en silencio la música no suena y no hay forma de saltárselo,
+  así que al menos tiene que entenderse que hay música.
+- La luz del fondo son tres degradados radiales moviéndose en 26 s (solo `transform`).
+  El grano es un mosaico PNG de 64 px repetido, no un `feTurbulence` a pantalla
+  completa, que al rasterizar pesa muchísimo.
+- `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
 
 ### Fuera del sitio: `/qr-emil/`
 La **tarjeta de 55×80 mm con el QR** que lleva a `/emil/nosotros/`, con tulipanes,
