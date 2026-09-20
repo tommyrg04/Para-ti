@@ -15,6 +15,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (nota)    | `/emil/nota/index.html`    | https://tommyrg04.github.io/Para-ti/emil/nota/    | ✅ lista |
 | emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista · QR en `/emil/nosotros/qr-emil.png` |
 | emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ✅ lista, con música |
+| emil (capítulo uno) | `/emil/capitulo-uno/index.html` | https://tommyrg04.github.io/Para-ti/emil/capitulo-uno/ | ✅ lista, con música |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -224,6 +225,35 @@ que era noche azul.
 - La luz del fondo son tres degradados radiales moviéndose en 26 s (solo `transform`).
   El grano es un mosaico PNG de 64 px repetido, no un `feTurbulence` a pantalla
   completa, que al rasterizar pesa muchísimo.
+- `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
+
+### emil / capítulo uno — la del noviazgo, vertical (iPhone), con música
+La del día que se hicieron novios. Once pantallas, un toque para avanzar.
+
+**El concepto**: un hilo de luz en el margen izquierdo que se va dibujando con
+cada toque, y tres zonas — **ANTES** (se estaban conociendo), **HOY** (se vieron y
+dejaron de ser «algo»), **DESPUÉS** (lo que falta). El hilo va tenue en el antes,
+encendido en el hoy y, al final, sigue bajando sin terminar. No es adorno: es lo
+que cuenta la página.
+
+- **El hilo** crece con `transform:scaleY` y el punto con `translateY`, los dos con
+  transición; nada de animar alto ni `top`.
+- **El destello** de «Ya somos nosotros» es un radial que sube de opacidad y escala
+  solo en esa pantalla. Es el único momento con brillo fuerte, para que pese.
+- **El contador** arranca del instante exacto en que empezaron y corre en vivo. Es
+  la sorpresa: cada vez que abra el enlace el número es otro. La fecha está en una
+  sola línea al principio del `<script>`, marcada con un comentario.
+- **Cristal** (`backdrop-filter`) solo en dos tarjetas pequeñas, la carta y el
+  contador — a pantalla completa sería caro. Lleva respaldo con `@supports` para
+  el navegador que no lo tenga.
+- Tipografía del sistema (SF Pro en iPhone): cero bytes de descarga y es
+  exactamente la que hace que se vea como una app de Apple.
+- Fondo: dos degradados radiales en deriva de 30 s, un viñeteado y **tres** puntos
+  de luz. Ni una lluvia de estrellas ni corazones flotando.
+- Misma música que `/emil/el-dia/` (`carino.mp3`, copia local), con el mismo botón
+  de sonido y el mismo aviso del silencio del iPhone.
+- Comprobado a 390×844, 360×640 y 1440×900: nada se sale y no hay scroll. En
+  pantalla grande el hilo se recoloca para seguir al bloque de texto centrado.
 - `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
 
 ### Fuera del sitio: `/qr-emil/`

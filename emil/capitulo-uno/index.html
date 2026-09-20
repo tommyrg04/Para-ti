@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050B16">
+<title>Capítulo uno</title>
+<style>
+  :root{
+    --fondo:#050B16;
+    --tinta:#EEF3FA;
+    --humo:rgba(238,243,250,.56);
+    --tenue:rgba(238,243,250,.34);
+    --luz:#9FC4EE;
+    --hueso:#F6F2EA;
+    --borde:rgba(238,243,250,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:var(--fondo);
+    color:var(--tinta);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",
+                "Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100svh;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+    cursor:pointer;
+    overscroll-behavior:none;
+  }
+
+  /* ---------- la luz del fondo ---------- */
+  .cielo{
+    position:fixed;inset:-25%;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(52% 38% at 26% 20%, rgba(70,120,190,.30) 0%, rgba(70,120,190,0) 64%),
+      radial-gradient(58% 42% at 78% 74%, rgba(44,86,150,.26) 0%, rgba(44,86,150,0) 66%);
+    will-change:transform;
+    animation:derivar 30s ease-in-out infinite alternate;
+  }
+  @keyframes derivar{
+    from{transform:translate3d(-2%,-1.6%,0) scale(1.03)}
+    to  {transform:translate3d(2.4%,2%,0) scale(1.09)}
+  }
+  /* vinateado: hunde los bordes y hace que el centro respire */
+  .borde{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(118% 80% at 50% 46%,rgba(5,11,22,0) 38%,rgba(5,11,22,.82) 100%);
+  }
+  /* el destello del momento: solo aparece en la pantalla de «ya somos nosotros» */
+  .destello{
+    position:fixed;left:50%;top:50%;z-index:1;pointer-events:none;
+    width:min(120vw,900px);aspect-ratio:1;border-radius:50%;
+    background:radial-gradient(circle,rgba(159,196,238,.20) 0%,rgba(159,196,238,0) 62%);
+    opacity:0;transform:translate(-50%,-50%) scale(.72);
+    transition:opacity 1.6s ease,transform 2.4s cubic-bezier(.16,.8,.3,1);
+    will-change:transform,opacity;
+  }
+  .destello.vivo{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  /* pequeñas luces fijas: tres, no una lluvia de estrellas */
+  .chispa{
+    position:fixed;z-index:1;width:2px;height:2px;border-radius:50%;
+    background:var(--luz);pointer-events:none;
+    will-change:opacity,transform;
+    animation:latir 7s ease-in-out infinite;
+  }
+  .chispa.b{animation-delay:2.4s}
+  .chispa.c{animation-delay:4.6s}
+  @keyframes latir{
+    0%,100%{opacity:.14;transform:scale(1)}
+    50%    {opacity:.55;transform:scale(1.5)}
+  }
+
+  /* ---------- el hilo ---------- */
+  .riel{
+    position:fixed;z-index:2;
+    left:calc(1.45rem + env(safe-area-inset-left));
+    top:17vh;bottom:17vh;width:1px;
+    background:var(--borde);
+  }
+  .riel-luz{
+    position:absolute;inset:0;transform-origin:top center;
+    transform:scaleY(0);
+    background:linear-gradient(180deg,rgba(159,196,238,.25),var(--luz));
+    transition:transform 1s cubic-bezier(.22,.7,.26,1),opacity .9s ease;
+    opacity:.5;will-change:transform;
+  }
+  .riel-punto{
+    position:absolute;left:50%;top:0;width:5px;height:5px;margin:-2px 0 0 -2.5px;
+    border-radius:50%;background:var(--luz);
+    box-shadow:0 0 10px 2px rgba(159,196,238,.55);
+    transform:translateY(0);opacity:0;
+    transition:transform 1s cubic-bezier(.22,.7,.26,1),opacity .8s ease;
+    will-change:transform;
+  }
+  /* el hilo responde a la zona: apagado antes, encendido hoy, abierto después */
+  body[data-zona="hoy"] .riel-luz{opacity:1}
+  body[data-zona="despues"] .riel-luz{opacity:.62}
+
+  /* ---------- las pantallas ---------- */
+  main{
+    position:relative;z-index:3;width:100%;
+    max-width:34rem;
+    padding:0 1.6rem 0 3.4rem;
+    padding-left:calc(3.4rem + env(safe-area-inset-left));
+    padding-right:calc(1.6rem + env(safe-area-inset-right));
+  }
+  .paso{
+    position:absolute;left:0;right:0;top:50%;
+    padding:inherit;
+    transform:translateY(-50%);
+    opacity:0;visibility:hidden;
+    transition:opacity .8s ease,visibility .8s;
+  }
+  .paso.activo{opacity:1;visibility:visible}
+
+  .zona{
+    display:block;margin-bottom:1.6rem;
+    font-size:.7rem;font-weight:600;letter-spacing:.34em;
+    color:var(--tenue);text-transform:uppercase;
+  }
+  .frase{
+    font-size:clamp(1.62rem,6.6vw,2.3rem);
+    font-weight:300;line-height:1.34;letter-spacing:-.018em;
+    text-wrap:balance;
+  }
+  .frase + .frase{margin-top:.62rem}
+  .frase.baja{color:var(--humo)}
+  .frase.fuerte{font-weight:500;color:#fff}
+
+  /* la entrada escalonada de cada línea */
+  .paso .zona,.paso .frase,.paso .bloque,
+  .paso.portada .para,.paso.portada .bajo{opacity:0;transform:translateY(12px)}
+  .paso.activo .zona,
+  .paso.activo .frase,
+  .paso.activo .bloque,
+  .paso.portada.activo .para,
+  .paso.portada.activo .bajo{animation:subir 1s cubic-bezier(.2,.75,.3,1) forwards}
+  .paso.portada.activo .para{animation-delay:.25s}
+  .paso.portada.activo .bajo{animation-delay:1.05s}
+  .paso.activo .zona{animation-delay:.05s}
+  .paso.activo .frase:nth-of-type(1){animation-delay:.32s}
+  .paso.activo .frase:nth-of-type(2){animation-delay:.92s}
+  .paso.activo .bloque{animation-delay:.5s}
+  @keyframes subir{to{opacity:1;transform:none}}
+
+  /* ---------- portada ---------- */
+  .paso.portada .para{
+    display:block;
+    font-size:clamp(2.5rem,11.5vw,3.9rem);
+    font-weight:300;letter-spacing:-.03em;line-height:1.05;
+  }
+  .paso.portada .bajo{
+    display:block;margin-top:1.15rem;font-size:clamp(1rem,4.3vw,1.14rem);
+    font-weight:300;color:var(--humo);line-height:1.5;
+  }
+
+  /* ---------- cristal ---------- */
+  .bloque{
+    margin-top:.4rem;padding:1.5rem 1.4rem;
+    border:1px solid var(--borde);border-radius:18px;
+    background:rgba(238,243,250,.045);
+    -webkit-backdrop-filter:blur(16px) saturate(135%);
+    backdrop-filter:blur(16px) saturate(135%);
+  }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .bloque{background:rgba(238,243,250,.085)}
+  }
+  .carta p{
+    font-size:clamp(1rem,4.25vw,1.1rem);font-weight:300;
+    line-height:1.62;color:var(--tinta);
+  }
+  .carta p + p{margin-top:.85rem}
+  .carta .rubrica{
+    display:block;margin-top:1.4rem;font-size:.74rem;letter-spacing:.26em;
+    color:var(--tenue);text-transform:uppercase;
+  }
+
+  /* ---------- contador ---------- */
+  .reloj{display:flex;gap:.5rem;justify-content:space-between}
+  .celda{flex:1;text-align:center}
+  .celda b{
+    display:block;font-size:clamp(1.5rem,7.4vw,2rem);
+    font-weight:300;letter-spacing:-.02em;color:#fff;
+    font-variant-numeric:tabular-nums;font-feature-settings:"tnum";
+  }
+  .celda span{
+    display:block;margin-top:.4rem;
+    font-size:.62rem;letter-spacing:.2em;color:var(--tenue);text-transform:uppercase;
+  }
+
+  /* ---------- cierre ---------- */
+  .paso.final .sello{
+    display:block;margin-top:2.9rem;
+    font-size:clamp(.94rem,4.1vw,1.06rem);
+    font-weight:500;letter-spacing:.42em;color:var(--luz);
+    text-transform:uppercase;
+    opacity:0;transform:translateY(12px);
+  }
+  .paso.final.activo .sello{animation:subir 1.5s cubic-bezier(.2,.75,.3,1) 2.4s forwards}
+  .paso.final .pie{
+    display:block;margin-top:.95rem;
+    font-size:.68rem;letter-spacing:.24em;color:var(--tenue);
+    text-transform:uppercase;
+    opacity:0;
+  }
+  .paso.final.activo .pie{animation:subir 1.2s ease 3.5s forwards}
+
+  /* ---------- pista y sonido ---------- */
+  .pista{
+    position:fixed;left:0;right:0;z-index:4;
+    bottom:calc(2rem + env(safe-area-inset-bottom));
+    text-align:center;font-size:.7rem;letter-spacing:.24em;
+    color:var(--tenue);text-transform:uppercase;
+    transition:opacity .7s ease;
+  }
+  .pista.oculta{opacity:0}
+  .pista i{
+    display:inline-block;width:5px;height:5px;border-radius:50%;
+    background:var(--luz);margin-right:.6rem;vertical-align:middle;
+    animation:respirar 2.6s ease-in-out infinite;
+  }
+  @keyframes respirar{0%,100%{opacity:.25}50%{opacity:1}}
+
+  .sonido{
+    position:fixed;z-index:5;
+    top:calc(1.1rem + env(safe-area-inset-top));
+    right:calc(1.1rem + env(safe-area-inset-right));
+    width:2.6rem;height:2.6rem;border-radius:50%;
+    border:1px solid var(--borde);
+    background:rgba(238,243,250,.055);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    display:none;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--humo);
+  }
+  .sonido.visible{display:flex}
+  .sonido svg{width:1.05rem;height:1.05rem;display:block}
+  .sonido .tachado{display:none}
+  .sonido.callado .onda{display:none}
+  .sonido.callado .tachado{display:block}
+  .sonido .aviso{
+    position:absolute;right:calc(100% + .6rem);top:50%;
+    transform:translateY(-50%);white-space:nowrap;
+    font-size:.66rem;letter-spacing:.1em;color:var(--tenue);
+    transition:opacity .8s ease;
+  }
+  .sonido .aviso.ido{opacity:0}
+
+  /* En pantalla grande el contenido va centrado, así que el hilo tiene que
+     seguirlo: pegado al borde izquierdo del bloque, no al de la ventana. */
+  @media (min-width:700px){
+    main{padding-left:5rem;padding-right:2rem}
+    .riel{left:calc(50% - 17rem + 2rem);top:22vh;bottom:22vh}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cielo,.chispa,.pista i{animation:none}
+    .destello{transition-duration:.01ms}
+    .paso{transition-duration:.01ms}
+    .paso.activo .zona,.paso.activo .frase,.paso.activo .bloque,
+    .paso.portada.activo .para,.paso.portada.activo .bajo,
+    .paso.final.activo .sello,.paso.final.activo .pie{
+      animation-duration:.01ms;animation-delay:0s
+    }
+    .riel-luz,.riel-punto{transition-duration:.01ms}
+  }
+</style>
+</head>
+<body data-zona="antes">
+
+<div class="cielo"></div>
+<div class="destello" id="destello"></div>
+<div class="borde"></div>
+<div class="chispa"   style="left:18%;top:26%"></div>
+<div class="chispa b" style="left:81%;top:38%"></div>
+<div class="chispa c" style="left:66%;top:72%"></div>
+
+<div class="riel"><div class="riel-luz" id="rielLuz"></div><div class="riel-punto" id="rielPunto"></div></div>
+
+<main>
+
+  <section class="paso portada activo" data-zona="antes">
+    <span class="para">Para Emil.</span>
+    <span class="bajo">Esta vez no vengo a pedirte nada.</span>
+  </section>
+
+  <section class="paso" data-zona="antes">
+    <span class="zona">Antes</span>
+    <p class="frase">Hace dos meses eras un nombre nuevo en mi teléfono.</p>
+    <p class="frase baja">No tenía idea de lo que se venía.</p>
+  </section>
+
+  <section class="paso" data-zona="antes">
+    <span class="zona">Antes</span>
+    <p class="frase">Y sin darme cuenta te empecé a contar todo.</p>
+    <p class="frase baja">Lo bueno, lo tonto, y lo que no le cuento a nadie.</p>
+  </section>
+
+  <section class="paso" data-zona="antes">
+    <span class="zona">Antes</span>
+    <p class="frase">Los días que hablábamos de madrugada eran mis favoritos.</p>
+    <p class="frase baja">Aunque al otro día me estuviera cayendo del sueño.</p>
+  </section>
+
+  <section class="paso" data-zona="hoy">
+    <span class="zona">Hoy</span>
+    <p class="frase">Antes de verte estaba nervioso como un loco.</p>
+    <p class="frase baja">Me imaginé mil cosas. No pasó ninguna.</p>
+  </section>
+
+  <section class="paso" data-zona="hoy">
+    <span class="zona">Hoy</span>
+    <p class="frase">Estabas ahí, de verdad, en frente mío.</p>
+    <p class="frase baja">Y se sintió como si ya nos hubiéramos visto mil veces.</p>
+  </section>
+
+  <section class="paso" data-zona="hoy" data-destello="1">
+    <span class="zona">Hoy</span>
+    <p class="frase">Hoy dejamos de ser <em>algo</em>.</p>
+    <p class="frase fuerte">Ya somos nosotros.</p>
+  </section>
+
+  <section class="paso" data-zona="despues">
+    <span class="zona">Después</span>
+    <p class="frase">No quiero solo los días bonitos contigo.</p>
+    <p class="frase baja">Quiero los martes aburridos. Esos también.</p>
+  </section>
+
+  <section class="paso" data-zona="despues">
+    <span class="zona">Después</span>
+    <div class="bloque carta">
+      <p>No sé escribir esto sin ponerme cursi, así que ya qué.</p>
+      <p>Gracias por los dos meses de antes, y por cómo te reíste hoy. Me dio una paz rarísima verte en persona y sentir que no había nada que fingir.</p>
+      <p>Voy a cuidar esto. No porque sea perfecto, sino porque es nuestro.</p>
+      <span class="rubrica">— Tommy</span>
+    </div>
+  </section>
+
+  <section class="paso" data-zona="despues">
+    <span class="zona">Desde hoy</span>
+    <p class="frase">Y esto ya está corriendo.</p>
+    <div class="bloque">
+      <div class="reloj">
+        <div class="celda"><b id="dd">0</b><span>días</span></div>
+        <div class="celda"><b id="hh">0</b><span>horas</span></div>
+        <div class="celda"><b id="mm">0</b><span>min</span></div>
+        <div class="celda"><b id="ss">0</b><span>seg</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="paso final" data-zona="despues">
+    <p class="frase">No sé qué viene después de hoy.</p>
+    <p class="frase fuerte">Pero ya sé con quién.</p>
+    <span class="sello">Capítulo uno</span>
+    <span class="pie">Tommy &amp; Emil · 20.09.2026</span>
+  </section>
+
+</main>
+
+<div class="pista" id="pista"><i></i>toca para empezar</div>
+
+<button class="sonido" id="sonido" aria-label="Silenciar la música">
+  <span class="aviso" id="aviso">si no suena, quítale el silencio al teléfono</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z" fill="currentColor" stroke="none"/>
+    <g class="onda"><path d="M15.4 9.3a3.6 3.6 0 0 1 0 5.4"/><path d="M17.9 6.8a7 7 0 0 1 0 10.4"/></g>
+    <path class="tachado" d="M16 9.5l5 5M21 9.5l-5 5"/>
+  </svg>
+</button>
+
+<audio id="musica" src="carino.mp3" loop preload="auto"></audio>
+
+<script>
+(function(){
+  /* ==========================================================
+     EL MOMENTO EN QUE EMPEZÓ. Cambiar solo esta línea.
+     Formato: año-mes-díaThora:minuto:segundo-04:00  (hora RD)
+     ========================================================== */
+  var EMPEZAMOS = new Date('2026-09-20T15:00:00-04:00');
+
+  var pasos   = Array.prototype.slice.call(document.querySelectorAll('.paso'));
+  var pista   = document.getElementById('pista');
+  var boton   = document.getElementById('sonido');
+  var aviso   = document.getElementById('aviso');
+  var musica  = document.getElementById('musica');
+  var destello= document.getElementById('destello');
+  var riel    = document.querySelector('.riel');
+  var rielLuz = document.getElementById('rielLuz');
+  var rielPto = document.getElementById('rielPunto');
+
+  var i = 0, bloqueado = false, sonando = false, hayMusica = true, tic = null;
+
+  /* Si falta el mp3 la experiencia no se entera: se esconde el botón
+     y no se intenta reproducir nada. */
+  musica.addEventListener('error', function(){
+    hayMusica = false; boton.classList.remove('visible');
+  });
+
+  function subirVolumen(){
+    var t0 = null, dur = 3000;
+    musica.volume = 0;
+    (function paso(t){
+      if (!t0) t0 = t;
+      var p = Math.min(((t || 0) - t0) / dur, 1);
+      musica.volume = 0.5 * p * p;
+      if (p < 1) requestAnimationFrame(paso);
+    })(performance.now());
+  }
+
+  function encender(){
+    if (!hayMusica || sonando) return;
+    sonando = true;
+    var intento = musica.play();
+    if (intento && intento.catch) intento.catch(function(){ /* el navegador dijo que no */ });
+    boton.classList.add('visible');
+    setTimeout(function(){ aviso.classList.add('ido'); }, 5500);
+    subirVolumen();
+  }
+
+  /* --- el contador: la sorpresa es que cada vez que abra, es otro número --- */
+  function dosCifras(n){ return n < 10 ? '0' + n : '' + n; }
+  function refrescarReloj(){
+    var ms = Math.max(0, Date.now() - EMPEZAMOS.getTime());
+    var s  = Math.floor(ms / 1000);
+    document.getElementById('dd').textContent = Math.floor(s / 86400);
+    document.getElementById('hh').textContent = dosCifras(Math.floor(s / 3600) % 24);
+    document.getElementById('mm').textContent = dosCifras(Math.floor(s / 60) % 60);
+    document.getElementById('ss').textContent = dosCifras(s % 60);
+  }
+
+  function pintarRiel(){
+    var p = i / (pasos.length - 1);
+    rielLuz.style.transform = 'scaleY(' + p + ')';
+    rielPto.style.transform = 'translateY(' + (p * riel.clientHeight) + 'px)';
+    rielPto.style.opacity = i === 0 ? '0' : '1';
+  }
+
+  function mostrar(n){
+    pasos.forEach(function(p){ p.classList.remove('activo'); });
+    var actual = pasos[n];
+    actual.classList.add('activo');
+    document.body.dataset.zona = actual.dataset.zona || 'antes';
+    destello.classList.toggle('vivo', actual.dataset.destello === '1');
+
+    if (actual.querySelector('#ss')) {
+      refrescarReloj();
+      if (!tic) tic = setInterval(refrescarReloj, 1000);
+    } else if (tic) { clearInterval(tic); tic = null; }
+
+    if (n === 1) pista.innerHTML = 'toca para seguir';
+    if (n === pasos.length - 1) pista.classList.add('oculta');
+    pintarRiel();
+  }
+
+  function avanzar(){
+    encender();
+    if (bloqueado || i >= pasos.length - 1) return;
+    bloqueado = true;
+    i++;
+    mostrar(i);
+    setTimeout(function(){ bloqueado = false; }, 850);
+  }
+
+  boton.addEventListener('click', function(e){
+    e.stopPropagation();
+    musica.muted = !musica.muted;
+    boton.classList.toggle('callado', musica.muted);
+    boton.setAttribute('aria-label', musica.muted ? 'Poner la música' : 'Silenciar la música');
+  });
+
+  window.addEventListener('resize', pintarRiel);
+  mostrar(0);
+  document.addEventListener('click', avanzar);
+  document.addEventListener('keydown', function(e){
+    if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight'){ e.preventDefault(); avanzar(); }
+  });
+})();
+</script>
+</body>
+</html>
