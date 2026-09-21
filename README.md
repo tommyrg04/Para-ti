@@ -258,35 +258,42 @@ que cuenta la página.
 - `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
 
 ### emil / flores amarillas — la lluvia, el árbol y el corazón
-Rehecha entera. Una sola escena continua sobre un `<canvas>`: la lluvia, el árbol
-y el corazón son **las mismas flores** moviéndose, nunca hay un cambio de pantalla.
+Una sola escena continua sobre un `<canvas>`: la lluvia, el árbol y el corazón son
+**las mismas flores** moviéndose, nunca hay un cambio de pantalla.
 
-**Las flores son recortes de las fotos de Tom**, no dibujos. Se sacaron con una
-máscara por «cuánto amarillo hay», se rellenaron los huecos y se quedó el
-componente conectado más grande, para aislar una flor y no un trozo de foto.
-Después el contorno se desvanece por dos distancias a la vez — a la silueta y al
-borde del recorte — para que no quede ni un canto recto. Seis flores, 256 px,
-145 KB en total.
+**Las flores están dibujadas con código**, no recortadas de fotos. Se intentó con
+recortes de las fotos reales y se descartó: por mucho que se afine la máscara, en
+una foto de ramo las flores se tocan entre sí y siempre queda algún canto recto.
+Ahora cada flor se pinta una sola vez en su propio lienzo al arrancar — pétalo a
+pétalo, con degradado de la base a la punta, nervio de luz y estambres — y la
+escena solo las estampa. Diez variantes: lirios de seis tépalos, flores de cinco
+pétalos, hortensias de cuatro, un capullo y un pétalo suelto.
 
-**Por qué canvas y no SVG ni divs.** Hay hasta 140 flores en pantalla a la vez,
-cada una con posición, giro, escala y opacidad propias. Con nodos del DOM eso no
-va a 60 fps en un teléfono; con `drawImage` sí. El desenfoque de las que pasan
-cerca de la cámara se calcula **una vez** al cargar, en un canvas aparte: aplicar
-un `filter` por fotograma habría costado la mitad de los cuadros.
+**Por qué canvas y no SVG ni divs.** Hay hasta 200 flores a la vez, cada una con
+posición, giro, escala y opacidad propias. Con nodos del DOM eso no va a 60 fps en
+un teléfono; con `drawImage` sí. El desenfoque de las que pasan pegadas a la cámara
+se calcula **una vez** al cargar, en un lienzo aparte: un `filter` por fotograma se
+come la mitad de los cuadros.
 
-- **El árbol** es recursivo con semilla fija, así que sale igual en cada visita.
-  Se dibuja por niveles —no rama a rama— para que parezca que crece.
-- **El corazón** son los puntos de la curva `x=16·sen³t, y=13·cos t−5·cos2t−2·cos3t−cos4t`,
-  recorridos desde la punta de abajo. Cada flor sale con un retraso proporcional a
-  su sitio en ese recorrido: por eso se ve **cómo se traza** la silueta y luego se
-  rellena. No hay ningún corazón dibujado de antemano.
+- **La lluvia** llena la pantalla desde el primer segundo: las flores se reparten
+  entre metro y medio por encima del borde y el borde de abajo, no empiezan todas
+  fuera de cuadro.
+- **El árbol** es recursivo con semilla fija, así que sale igual en cada visita. La
+  profundidad varía de una rama a otra: si todas acaban a la vez, las puntas quedan
+  alineadas y la copa se ve como una franja recta.
+- **El corazón** son los puntos de la curva
+  `x=16·sen³t, y=13·cos t−5·cos2t−2·cos3t−cos4t`, recorridos **a paso constante** —
+  repartiendo por el parámetro se amontonaban en la punta de abajo. Cada flor sale
+  con un retraso proporcional a su sitio en el recorrido: por eso se ve cómo se
+  traza la silueta y luego se rellena. El relleno lleva distancia mínima entre
+  flores. No hay ningún corazón dibujado de antemano.
 - **Los textos** van en el tercio de abajo con un velo degradado: encima de la copa
   del árbol no se leía nada.
 - La música es un acorde de la Web Audio API y arranca con el mismo clic que abre
   el regalo. El ♪ solo sirve para callarla.
-- Tipografías incrustadas y recortadas a las 94 letras que usa la página. Cero
-  peticiones fuera del archivo.
-- 231 KB en total, contra los 944 KB de la versión anterior.
+- Tipografías incrustadas y recortadas a las 94 letras que usa la página.
+- **89 KB en total**, contra los 944 KB de la primera versión. Cero peticiones
+  fuera del archivo.
 - Comprobado a 390×844, 360×640 y 1440×900.
 
 ### Fuera del sitio: `/qr-emil/`
