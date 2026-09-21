@@ -591,9 +591,15 @@ function bucle(ts){
   if (ordenar){ flores.sort((a,b) => a.z - b.z); ordenar = false; }
   for (const f of flores){
     if (f.modo === 'espera') continue;
+    if (f.opObj != null) f.op += (f.opObj - f.op) * 0.02;
     if (f.modo === 'cae'){
       f.y += f.vy * dt; f.x += f.vx * dt; f.rot += f.vr * dt;
       if (f.y > H + 160){ Object.assign(f, nuevaFlor()); f.y = -120; ordenar = true; }
+    } else if (f.modo === 'frena'){
+      /* la caída no se corta de golpe: pierde fuerza hasta quedarse quieta */
+      f.vy *= 0.955; f.vx *= 0.955;
+      f.y += f.vy * dt; f.x += f.vx * dt; f.rot += f.vr * 0.5 * dt;
+      if (f.vy < 0.08){ f.modo = 'fijo'; f.yb = f.y; f.fase = az()*6.2832; }
     } else if (f.modo === 'vuela'){
       const p = Math.min((ahora - f.t0)/f.dur, 1);
       const e = fac(p);
@@ -650,6 +656,36 @@ function revisar(t){
   for (const m of marcas) if (!m.hecho && t >= m.ms){ m.hecho = true; m.fn(); }
 }
 
+/* ---------- se acaba la lluvia ----------
+   La caída es solo la entrada. Después se queda suspendido un puñado, lejos
+   del sitio donde va el texto, y el resto se retira: con las trescientas
+   quietas la pantalla se llena y no hay quien lea nada. */
+function suspender(){
+  const sueltas = flores.filter(f => f.modo === 'cae').sort(() => az()-0.5);
+  const QUEDAN = W < 420 ? 34 : 46;
+  const zonaTexto = { x1: W*0.02, y1: H*0.58, x2: W*0.98, y2: H*0.95 };
+  let k = 0;
+  for (const f of sueltas){
+    if (k < QUEDAN){
+      let x, y, intentos = 0;
+      do {
+        x = ent(W*0.04, W*0.96); y = ent(H*0.05, H*0.95); intentos++;
+      } while (intentos < 30 &&
+               x > zonaTexto.x1 && x < zonaTexto.x2 && y > zonaTexto.y1 && y < zonaTexto.y2);
+      f.x = x; f.y = y;
+      f.modo = 'frena';
+      f.s = ent(.05,.095) * Math.min(W,H)/256;
+      f.opObj = ent(.16, .34);
+      k++;
+    } else {
+      /* se van por abajo y esperan fuera: vuelven cuando nace el árbol */
+      f.modo = 'vuela'; f.t0 = ahora + ent(0, 1200); f.dur = ent(1600, 2600);
+      f.x0 = f.x; f.y0 = f.y; f.x1 = f.x + ent(-W*.3, W*.3); f.y1 = H + 240;
+      f.r0 = f.rot; f.r1 = f.rot + ent(-1.5,1.5); f.op = 0; f.opObj = null;
+    }
+  }
+}
+
 /* ---------- posar las flores en el árbol ---------- */
 function posarEnArbol(){
   const sitios = puntas.slice().sort(() => az()-0.5);
@@ -657,11 +693,13 @@ function posarEnArbol(){
   for (const f of flores){
     if (k >= sitios.length || k >= flores.length*0.92) break;
     const p = sitios[k];
+    /* las que se habían retirado entran de nuevo desde fuera de cuadro */
+    if (f.op <= 0.02){ f.x = ent(-W*.1, W*1.1); f.y = -ent(H*.05, H*.75); }
     f.modo = 'vuela'; f.t0 = ahora + k*26; f.dur = ent(1500, 2500);
     f.x0 = f.x; f.y0 = f.y; f.x1 = p.x + ent(-7,7); f.y1 = p.y + ent(-7,7);
     f.r0 = f.rot; f.r1 = f.rot + ent(-.5,.5);
     f.s = Math.min(f.s, (0.078 + f.z*0.055) * Math.min(W,H)/256);
-    f.op = 0.72 + f.z*0.28;
+    f.op = 0.72 + f.z*0.28; f.opObj = null;
     k++;
   }
 }
@@ -679,7 +717,7 @@ function formarCorazon(){
     f.x0 = f.x; f.y0 = f.y; f.x1 = destino.x; f.y1 = destino.y;
     f.r0 = f.rot; f.r1 = f.rot + ent(-1.1, 1.1);
     f.s = escala * Math.min(W,H)/256;
-    f.op = 1; f.z = 0.5; f.vr = ent(-.004,.004); ordenar = true;
+    f.op = 1; f.opObj = null; f.z = 0.5; f.vr = ent(-.004,.004); ordenar = true;
   };
   /* el borde primero y en orden: se ve cómo se traza la curva */
   const dispoB = Math.min(P.borde.length, nB, libres.length);
@@ -701,7 +739,7 @@ function formarCorazon(){
     if (quedan-- > 0){
       const a = az()*6.2832, r = Math.min(W,H)*ent(.30,.46);
       f.x1 = W/2 + Math.cos(a)*r; f.y1 = H*0.42 + Math.sin(a)*r*0.9;
-      f.s = ent(.045,.075) * Math.min(W,H)/256; f.op = ent(.35,.6);
+      f.s = ent(.045,.075) * Math.min(W,H)/256; f.op = ent(.35,.6); f.opObj = null;
     } else {
       f.x1 = f.x + ent(-W,W); f.y1 = H + 320; f.op = 0;
     }
@@ -776,28 +814,36 @@ document.getElementById('abrir').addEventListener('click', () => {
   camObj.z = 1.0;
 });
 
-/* ---------- la línea de tiempo ---------- */
-const P = lento ? 0.35 : 1;                 // con movimiento reducido, todo más corto
+/* ---------- la línea de tiempo ----------
+   Orden: la lluvia es solo la entrada; después todo se calma para poder
+   leer; y el árbol y el corazón llegan al final, como el desenlace. */
+const P = lento ? 0.35 : 1;
 const T = ms => Math.round(ms * P);
 
-en(T(4600), () => {                          // el árbol empieza a revelarse
+en(T(5000), () => {                          // se acaba la caída
+  suspender();
   document.body.classList.add('calido');
   document.body.classList.add('contando');
+  camObj.z = 1.0;
+});
+en(T(6400),  () => mostrar(1));
+en(T(11200), () => mostrar(2));
+en(T(16000), () => mostrar(3));
+en(T(20800), () => mostrar(4));
+en(T(25600), () => mostrar(5));
+en(T(30400), () => mostrar(0));
+
+en(T(31200), () => {                         // ahora sí: aparece el árbol
   camObj.z = 0.88;
-  const d = T(3400), a = ahora;
+  const d = T(3600), a = ahora;
   (function crecer(){
     arbolP = Math.min((ahora - a)/d, 1);
     if (arbolP < 1) requestAnimationFrame(crecer);
   })();
+  posarEnArbol();
 });
-en(T(6400), posarEnArbol);
-en(T(8600),  () => mostrar(1));
-en(T(13000), () => mostrar(2));
-en(T(17400), () => mostrar(3));
-en(T(21800), () => mostrar(4));
-en(T(26200), () => mostrar(5));
-en(T(30400), () => { mostrar(0); });
-en(T(31000), () => {                         // se sueltan del árbol
+
+en(T(38000), () => {                         // y las flores se sueltan de él
   formarCorazon();
   const d = T(3000), a = ahora;
   (function apagar(){
@@ -805,12 +851,12 @@ en(T(31000), () => {                         // se sueltan del árbol
     if (arbolP > 0) requestAnimationFrame(apagar);
   })();
 });
-en(T(38400), () => { camObj.z = 1.10; });    // zoom muy lento al corazón
-en(T(39200), () => mostrar(6));
-en(T(43800), () => mostrar(7));
-en(T(48800), () => mostrar(8));
-en(T(55000), () => { mostrar(0); ultimaFlor(); });
-en(T(57600), () => { mostrar(9); document.body.classList.add('hayFlor'); });
+en(T(45400), () => { camObj.z = 1.10; });    // zoom muy lento al corazón
+en(T(46200), () => mostrar(6));
+en(T(50800), () => mostrar(7));
+en(T(55800), () => mostrar(8));
+en(T(62000), () => { mostrar(0); ultimaFlor(); });
+en(T(64600), () => { mostrar(9); document.body.classList.add('hayFlor'); });
 
 /* ---------- la tarjeta ---------- */
 function abrirTarjeta(){

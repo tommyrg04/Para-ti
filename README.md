@@ -275,9 +275,14 @@ un teléfono; con `drawImage` sí. El desenfoque de las que pasan pegadas a la c
 se calcula **una vez** al cargar, en un lienzo aparte: un `filter` por fotograma se
 come la mitad de los cuadros.
 
-- **La lluvia** llena la pantalla entera desde el primer segundo: hasta **300
-  flores** en el teléfono y 420 en pantalla grande, repartidas desde justo encima
-  del borde hasta abajo del todo, no empezando todas fuera de cuadro.
+**El orden de la película**: la lluvia es solo la entrada —cinco segundos, la
+pantalla entera llena de flores, hasta 300 en el teléfono—; después se para, queda
+suspendido un puñado lejos del sitio del texto y el resto se retira, para poder
+leer las cinco frases con calma; y el árbol y el corazón llegan **al final**, como
+desenlace. Con las trescientas quietas no había quien leyera nada.
+
+- La caída no se corta de golpe: pierde fuerza hasta quedarse quieta. Las que se
+  retiran esperan fuera de cuadro y **vuelven a entrar** cuando nace el árbol.
 - **El orden por profundidad se recalcula solo cuando alguna flor cambia de
   plano**, no en cada cuadro: con trescientas, ordenarlas sesenta veces por segundo
   es trabajo tirado.
