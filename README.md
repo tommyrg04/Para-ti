@@ -257,24 +257,37 @@ que cuenta la página.
   pantalla grande el hilo se recoloca para seguir al bloque de texto centrado.
 - `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
 
-### emil / flores amarillas — fotos reales de fondo, con scroll
-La de las flores amarillas que no se pudieron entregar en persona. **La hizo Tom**;
-aquí solo se retocó, así que las fotos y los textos son suyos y no se tocan. Lo que
-se cambió:
+### emil / flores amarillas — la lluvia, el árbol y el corazón
+Rehecha entera. Una sola escena continua sobre un `<canvas>`: la lluvia, el árbol
+y el corazón son **las mismas flores** moviéndose, nunca hay un cambio de pantalla.
 
-- **Las tipografías ya no vienen de Google.** Cormorant Garamond y Jost van
-  incrustadas en el propio HTML y **recortadas a las 80 letras** que usa la página:
-  38 KB en total. Antes el archivo pedía tres cosas a `fonts.googleapis.com` y
-  `fonts.gstatic.com`, con lo que no funcionaba sin internet y la letra cambiaba
-  delante de los ojos al cargar. Ahora no sale ni una petición fuera del archivo.
-- **La música arranca sola**, con el mismo clic de «abrir mi regalo». El navegador
-  exige un gesto del usuario para dejar sonar algo, y ese clic lo es, así que no
-  hace falta buscar ningún botón. Entra subiendo en 3,5 s. El ♪ de la esquina se
-  queda, pero ahora solo sirve para callarla.
-- **La última frase** de la tarjeta final, que era la única que Tom pidió cambiar.
+**Las flores son recortes de las fotos de Tom**, no dibujos. Se sacaron con una
+máscara por «cuánto amarillo hay», se rellenaron los huecos y se quedó el
+componente conectado más grande, para aislar una flor y no un trozo de foto.
+Después el contorno se desvanece por dos distancias a la vez — a la silueta y al
+borde del recorte — para que no quede ni un canto recto. Seis flores, 256 px,
+145 KB en total.
 
-El sonido es un acorde generado con la Web Audio API (cuatro osciladores y un
-filtro paso bajo), no un archivo: por eso esta página no lleva mp3.
+**Por qué canvas y no SVG ni divs.** Hay hasta 140 flores en pantalla a la vez,
+cada una con posición, giro, escala y opacidad propias. Con nodos del DOM eso no
+va a 60 fps en un teléfono; con `drawImage` sí. El desenfoque de las que pasan
+cerca de la cámara se calcula **una vez** al cargar, en un canvas aparte: aplicar
+un `filter` por fotograma habría costado la mitad de los cuadros.
+
+- **El árbol** es recursivo con semilla fija, así que sale igual en cada visita.
+  Se dibuja por niveles —no rama a rama— para que parezca que crece.
+- **El corazón** son los puntos de la curva `x=16·sen³t, y=13·cos t−5·cos2t−2·cos3t−cos4t`,
+  recorridos desde la punta de abajo. Cada flor sale con un retraso proporcional a
+  su sitio en ese recorrido: por eso se ve **cómo se traza** la silueta y luego se
+  rellena. No hay ningún corazón dibujado de antemano.
+- **Los textos** van en el tercio de abajo con un velo degradado: encima de la copa
+  del árbol no se leía nada.
+- La música es un acorde de la Web Audio API y arranca con el mismo clic que abre
+  el regalo. El ♪ solo sirve para callarla.
+- Tipografías incrustadas y recortadas a las 94 letras que usa la página. Cero
+  peticiones fuera del archivo.
+- 231 KB en total, contra los 944 KB de la versión anterior.
+- Comprobado a 390×844, 360×640 y 1440×900.
 
 ### Fuera del sitio: `/qr-emil/`
 La **tarjeta de 55×80 mm con el QR** que lleva a `/emil/nosotros/`, con tulipanes,
