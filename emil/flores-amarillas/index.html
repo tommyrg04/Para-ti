@@ -132,7 +132,20 @@ body.contando #pie{opacity:1}
   animation:latir 2.6s ease-in-out infinite;
 }
 @keyframes latir{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
-#zonaFlor{position:fixed;inset:0;z-index:6;display:none;cursor:pointer}
+#pista{
+  position:fixed;left:0;right:0;z-index:7;
+  bottom:calc(1.9rem + env(safe-area-inset-bottom));
+  text-align:center;pointer-events:none;
+  opacity:0;transition:opacity .9s ease;
+}
+body.tocable #pista{opacity:1}
+#pista span{
+  font-size:.66rem;letter-spacing:.28em;color:var(--tenue);
+  animation:respirar 2.8s ease-in-out infinite;
+}
+@keyframes respirar{0%,100%{opacity:.5}50%{opacity:1}}
+
+#zonaFlor{position:fixed;inset:0;z-index:8;display:none;cursor:pointer}
 body.hayFlor #zonaFlor{display:block}
 
 /* ---------------- tarjeta ---------------- */
@@ -221,6 +234,8 @@ body.hayFlor #zonaFlor{display:block}
   </div>
 
 </div>
+
+<div id="pista"><span>toca para seguir</span></div>
 
 <div id="zonaFlor" aria-label="Abrir la última flor" role="button" tabindex="0"></div>
 
@@ -770,32 +785,85 @@ function ultimaFlor(){
   camObj.z = 1.0;
 }
 
-/* ---------- sonido: acorde cálido, arranca con el mismo clic ---------- */
-let ctx=null, master=null, sonando=false;
+/* ---------- la música ----------
+   Nada de archivos: se genera con la Web Audio API. Un colchón de cuatro
+   voces que va cambiando de acorde muy despacio —ahí está lo que emociona,
+   en que se mueva y no sea un zumbido fijo— y unas campanas sueltas encima.
+   Arranca con el mismo clic que abre el regalo, porque el navegador exige
+   un gesto del usuario para dejar sonar nada. */
+let ctx=null, master=null, sonando=false, voces=[], acorde=0, relojAcordes=null, relojCampanas=null;
+
+/* Fa mayor: Fmaj9 → Dm9 → Bbmaj7 → C7sus. Vuelve al principio y no cansa. */
+const ACORDES = [
+  [174.61, 220.00, 261.63, 329.63],
+  [146.83, 174.61, 220.00, 261.63],
+  [116.54, 146.83, 174.61, 220.00],
+  [130.81, 174.61, 196.00, 233.08],
+];
+
+function campana(){
+  if (!ctx || !sonando) return;
+  const notas = ACORDES[acorde];
+  const hz = notas[Math.floor(Math.random()*notas.length)] * (Math.random() < .55 ? 4 : 2);
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'sine'; o.frequency.value = hz;
+  const t = ctx.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.095, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+  o.connect(g).connect(master);
+  o.start(t); o.stop(t + 2.8);
+}
+
+function cambiarAcorde(){
+  if (!ctx) return;
+  acorde = (acorde + 1) % ACORDES.length;
+  const t = ctx.currentTime;
+  voces.forEach((v, i) => {
+    /* glissando lento de un acorde al siguiente: el cambio no se oye como
+       un salto, se oye como que la música respira */
+    v.frequency.setTargetAtTime(ACORDES[acorde][i], t, 1.1);
+  });
+}
+
 function crearSonido(){
   if (ctx) return true;
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return false;
   ctx = new AC();
   master = ctx.createGain(); master.gain.value = 0;
+
   const filtro = ctx.createBiquadFilter();
-  filtro.type = 'lowpass'; filtro.frequency.value = 820;
+  filtro.type = 'lowpass'; filtro.frequency.value = 1150; filtro.Q.value = 0.6;
   master.connect(filtro).connect(ctx.destination);
-  [174.61, 261.63, 329.63, 392.00].forEach((hz,i) => {
-    const o = ctx.createOscillator(), gn = ctx.createGain();
-    o.type = 'sine'; o.frequency.value = hz; gn.gain.value = .25/(i+1);
-    const l = ctx.createOscillator(), lg = ctx.createGain();
-    l.frequency.value = .06 + i*.03; lg.gain.value = .12/(i+1);
-    l.connect(lg).connect(gn.gain); l.start();
-    o.connect(gn).connect(master); o.start();
+
+  /* el colchón respira: una onda lentísima sobre el volumen */
+  const aliento = ctx.createOscillator(), alientoG = ctx.createGain();
+  /* el respiro suma sobre el volumen, no lo multiplica: con 0,22 sobre un
+     master de 0,19 la música se hundía hasta el silencio cada 22 s */
+  aliento.frequency.value = 0.045; alientoG.gain.value = 0.055;
+  aliento.connect(alientoG).connect(master.gain); aliento.start();
+
+  ACORDES[0].forEach((hz, i) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = i === 0 ? 'triangle' : 'sine';
+    o.frequency.value = hz;
+    o.detune.value = (i - 1.5) * 4;              // apenas desafinadas: dan cuerpo
+    g.gain.value = [0.26, 0.19, 0.15, 0.12][i];
+    o.connect(g).connect(master); o.start();
+    voces.push(o);
   });
+
+  relojAcordes  = setInterval(cambiarAcorde, 8200);
+  relojCampanas = setInterval(campana, 2600);
   return true;
 }
+
 function ponerSonido(quiero){
   try{
     if (!crearSonido()) return;
     ctx.resume(); sonando = quiero;
-    master.gain.linearRampToValueAtTime(quiero ? .05 : 0, ctx.currentTime + (quiero ? 4 : 1.2));
+    master.gain.linearRampToValueAtTime(quiero ? 0.32 : 0, ctx.currentTime + (quiero ? 4 : 1.2));
     son.classList.toggle('on', quiero);
     son.setAttribute('aria-label', quiero ? 'Silenciar la música' : 'Poner la música');
   }catch(e){}
@@ -814,49 +882,87 @@ document.getElementById('abrir').addEventListener('click', () => {
   camObj.z = 1.0;
 });
 
-/* ---------- la línea de tiempo ----------
-   Orden: la lluvia es solo la entrada; después todo se calma para poder
-   leer; y el árbol y el corazón llegan al final, como el desenlace. */
+/* ---------- el paso a paso ----------
+   Las frases NO van por reloj: pasan cuando Emil toca, para que pueda
+   leerlas a su ritmo. Lo único que corre solo es la parte de cine —la
+   lluvia del principio, el árbol y el corazón—, donde no hay que leer. */
 const P = lento ? 0.35 : 1;
 const T = ms => Math.round(ms * P);
 
-en(T(5000), () => {                          // se acaba la caída
-  suspender();
-  document.body.classList.add('calido');
-  document.body.classList.add('contando');
-  camObj.z = 1.0;
-});
-en(T(6400),  () => mostrar(1));
-en(T(11200), () => mostrar(2));
-en(T(16000), () => mostrar(3));
-en(T(20800), () => mostrar(4));
-en(T(25600), () => mostrar(5));
-en(T(30400), () => mostrar(0));
+let paso = 0, esperando = true, cerrojo = false;
+const cuerpo = document.body;
 
-en(T(31200), () => {                         // ahora sí: aparece el árbol
+function tocable(si){
+  esperando = si;
+  cuerpo.classList.toggle('tocable', si);
+}
+
+const pasos = [
+  () => mostrar(1),
+  () => mostrar(2),
+  () => mostrar(3),
+  () => mostrar(4),
+  () => mostrar(5),
+  () => { mostrar(0); secuenciaFinal(); },
+  () => mostrar(6),
+  () => mostrar(7),
+  () => mostrar(8),
+  () => {
+    mostrar(0); tocable(false); ultimaFlor();
+    setTimeout(() => { mostrar(9); cuerpo.classList.add('hayFlor'); }, T(2600));
+  },
+];
+
+function avanzar(){
+  if (!esperando || cerrojo || paso >= pasos.length) return;
+  cerrojo = true;
+  setTimeout(() => { cerrojo = false; }, 780);
+  pasos[paso++]();
+}
+
+/* ---------- la parte que corre sola ---------- */
+function secuenciaFinal(){
+  tocable(false);
   camObj.z = 0.88;
-  const d = T(3600), a = ahora;
+  const a = ahora, d = T(3600);
   (function crecer(){
     arbolP = Math.min((ahora - a)/d, 1);
     if (arbolP < 1) requestAnimationFrame(crecer);
   })();
   posarEnArbol();
-});
 
-en(T(38000), () => {                         // y las flores se sueltan de él
-  formarCorazon();
-  const d = T(3000), a = ahora;
-  (function apagar(){
-    arbolP = Math.max(1 - (ahora - a)/d, 0);
-    if (arbolP > 0) requestAnimationFrame(apagar);
-  })();
+  setTimeout(() => {                       // se sueltan del árbol
+    formarCorazon();
+    const b = ahora, e = T(3000);
+    (function apagar(){
+      arbolP = Math.max(1 - (ahora - b)/e, 0);
+      if (arbolP > 0) requestAnimationFrame(apagar);
+    })();
+  }, T(6800));
+
+  setTimeout(() => {                       // corazón hecho: vuelve la palabra
+    camObj.z = 1.10;
+    pasos[paso++]();                       // «Para ti, Emil.»
+    tocable(true);
+  }, T(14600));
+}
+
+/* la lluvia es lo único que arranca por reloj */
+en(T(5000), () => {
+  suspender();
+  cuerpo.classList.add('calido');
+  cuerpo.classList.add('contando');
+  camObj.z = 1.0;
 });
-en(T(45400), () => { camObj.z = 1.10; });    // zoom muy lento al corazón
-en(T(46200), () => mostrar(6));
-en(T(50800), () => mostrar(7));
-en(T(55800), () => mostrar(8));
-en(T(62000), () => { mostrar(0); ultimaFlor(); });
-en(T(64600), () => { mostrar(9); document.body.classList.add('hayFlor'); });
+en(T(6400), () => { pasos[paso++](); tocable(true); });
+
+document.addEventListener('click', e => {
+  if (e.target.closest('#sonido') || e.target.closest('#abrir') || e.target.closest('#zonaFlor')) return;
+  avanzar();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight'){ e.preventDefault(); avanzar(); }
+});
 
 /* ---------- la tarjeta ---------- */
 function abrirTarjeta(){
@@ -864,6 +970,7 @@ function abrirTarjeta(){
   tarjeta.classList.add('abierta');
   mostrar(0);
   document.body.classList.remove('hayFlor');
+  document.body.classList.remove('tocable');
 }
 zonaFlor.addEventListener('click', abrirTarjeta);
 zonaFlor.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' '){ e.preventDefault(); abrirTarjeta(); } });

@@ -275,6 +275,10 @@ un teléfono; con `drawImage` sí. El desenfoque de las que pasan pegadas a la c
 se calcula **una vez** al cargar, en un lienzo aparte: un `filter` por fotograma se
 come la mitad de los cuadros.
 
+**Las frases pasan al tocar**, no por reloj: Emil las lee a su ritmo, con un
+«toca para seguir» discreto abajo. Lo único que corre solo es la parte de cine
+—la lluvia del principio, el árbol y el corazón—, donde no hay nada que leer.
+
 **El orden de la película**: la lluvia es solo la entrada —cinco segundos, la
 pantalla entera llena de flores, hasta 300 en el teléfono—; después se para, queda
 suspendido un puñado lejos del sitio del texto y el resto se retira, para poder
@@ -299,8 +303,13 @@ desenlace. Con las trescientas quietas no había quien leyera nada.
   flores. No hay ningún corazón dibujado de antemano.
 - **Los textos** van en el tercio de abajo con un velo degradado: encima de la copa
   del árbol no se leía nada.
-- La música es un acorde de la Web Audio API y arranca con el mismo clic que abre
-  el regalo. El ♪ solo sirve para callarla.
+- **La música** se genera con la Web Audio API, sin ningún archivo: un colchón de
+  cuatro voces que va cambiando de acorde cada 8 s —Fmaj9 → Dm9 → Bbmaj7 → C7sus,
+  con glissando de 1,1 s entre uno y otro, que es lo que hace que respire en vez de
+  ser un zumbido fijo— y campanas sueltas encima sobre las notas del acorde de
+  turno. Arranca con el mismo clic que abre el regalo; el ♪ solo sirve para
+  callarla. Medida renderizándola fuera de línea: **RMS 0,073–0,094 y pico 0,28**,
+  sin saturar.
 - Tipografías incrustadas y recortadas a las 94 letras que usa la página.
 - **90 KB en total**, contra los 944 KB de la primera versión. Cero peticiones
   fuera del archivo.
