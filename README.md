@@ -16,6 +16,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (nosotros) | `/emil/nosotros/index.html` | https://tommyrg04.github.io/Para-ti/emil/nosotros/ | ✅ lista · QR en `/emil/nosotros/qr-emil.png` |
 | emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ✅ lista, con música |
 | emil (capítulo uno) | `/emil/capitulo-uno/index.html` | https://tommyrg04.github.io/Para-ti/emil/capitulo-uno/ | ✅ lista, con música |
+| emil (flores amarillas) | `/emil/flores-amarillas/index.html` | https://tommyrg04.github.io/Para-ti/emil/flores-amarillas/ | ✅ lista, con música |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -255,6 +256,25 @@ que cuenta la página.
 - Comprobado a 390×844, 360×640 y 1440×900: nada se sale y no hay scroll. En
   pantalla grande el hilo se recoloca para seguir al bloque de texto centrado.
 - `100svh`, `safe-area-inset` y `prefers-reduced-motion: reduce`.
+
+### emil / flores amarillas — fotos reales de fondo, con scroll
+La de las flores amarillas que no se pudieron entregar en persona. **La hizo Tom**;
+aquí solo se retocó, así que las fotos y los textos son suyos y no se tocan. Lo que
+se cambió:
+
+- **Las tipografías ya no vienen de Google.** Cormorant Garamond y Jost van
+  incrustadas en el propio HTML y **recortadas a las 80 letras** que usa la página:
+  38 KB en total. Antes el archivo pedía tres cosas a `fonts.googleapis.com` y
+  `fonts.gstatic.com`, con lo que no funcionaba sin internet y la letra cambiaba
+  delante de los ojos al cargar. Ahora no sale ni una petición fuera del archivo.
+- **La música arranca sola**, con el mismo clic de «abrir mi regalo». El navegador
+  exige un gesto del usuario para dejar sonar algo, y ese clic lo es, así que no
+  hace falta buscar ningún botón. Entra subiendo en 3,5 s. El ♪ de la esquina se
+  queda, pero ahora solo sirve para callarla.
+- **La última frase** de la tarjeta final, que era la única que Tom pidió cambiar.
+
+El sonido es un acorde generado con la Web Audio API (cuatro osciladores y un
+filtro paso bajo), no un archivo: por eso esta página no lleva mp3.
 
 ### Fuera del sitio: `/qr-emil/`
 La **tarjeta de 55×80 mm con el QR** que lleva a `/emil/nosotros/`, con tulipanes,
