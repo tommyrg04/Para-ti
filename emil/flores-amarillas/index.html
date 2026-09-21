@@ -70,9 +70,9 @@ body.contando #pie{opacity:1}
 .bloque{
   position:absolute;width:100%;max-width:30rem;
   opacity:0;visibility:hidden;
-  transition:opacity 1.5s ease,visibility 1.5s;
+  transition:opacity .55s ease,visibility .55s;   /* salir es rápido */
 }
-.bloque.vivo{opacity:1;visibility:visible}
+.bloque.vivo{opacity:1;visibility:visible;transition:opacity 1.3s ease,visibility 1.3s}
 
 .frase{
   font-family:var(--serif);font-weight:300;
@@ -85,7 +85,8 @@ body.contando #pie{opacity:1}
 .frase.suave{color:var(--humo)}
 
 /* ---------------- portada ---------------- */
-#portada{pointer-events:auto}
+/* la portada sí se va despacio: es el corte de entrada a la escena */
+#portada{pointer-events:auto;transition:opacity 1.2s ease,visibility 1.2s}
 #portada .nombre{
   font-family:var(--serif);font-weight:300;
   font-size:clamp(2.9rem,12.5vw,4.6rem);
@@ -493,7 +494,7 @@ function puntosCorazon(nBorde, nDentro){
 
   /* Relleno con distancia mínima: sin ella se apelotonan y hacen un borrón. */
   const dentro = [];
-  const minimo = k*3.2;
+  const minimo = k*2.5;
   let intentos = 0;
   while (dentro.length < nDentro && intentos < 9000){
     intentos++;
@@ -510,13 +511,13 @@ function puntosCorazon(nBorde, nDentro){
 
 /* ---------- flores ---------- */
 const flores = [];
-const MAX = (W < 420 ? 155 : 200);
+const MAX = (W < 420 ? 300 : 420);
 function nuevaFlor(){
   const i = Math.floor(az()*hojas.length);
   const z = az();                                  // 0 lejos, 1 pegada a la cámara
   return {
     i, z,
-    x: ent(-W*0.06, W*1.06), y: -ent(0, H*1.25),
+    x: ent(-W*0.06, W*1.06), y: -ent(0, H*0.95),
     s: (0.055 + z*0.145) * Math.min(W,H) / 256,
     rot: ent(0,Math.PI*2), vr: ent(-.012,.012),
     vx: ent(-.22,.22), vy: (0.9 + z*2.3),
@@ -534,7 +535,7 @@ for (let i=0;i<26;i++) motas.push({
 /* ---------- estado ---------- */
 let fase = 'espera', t0 = 0, ahora = 0;
 let arbolP = 0, cam = { z:1.18, x:0, y:0 }, camObj = { z:1.18, x:0, y:0 };
-let calma = 0;
+let calma = 0, ordenar = true;
 
 function arrancar(){
   for (let i=0;i<MAX;i++){ const f = nuevaFlor(); f.modo = 'espera'; f.y = -ent(0, H*2.2); flores.push(f); }
@@ -584,13 +585,15 @@ function bucle(ts){
 
   dibujarArbol(arbolP);
 
-  /* flores: de lejos a cerca, para que las de delante tapen */
-  flores.sort((a,b) => a.z - b.z);
+  /* flores: de lejos a cerca, para que las de delante tapen. Se ordena solo
+     cuando alguna cambia de profundidad, no en cada cuadro: con trescientas,
+     ordenar sesenta veces por segundo es trabajo tirado a la basura. */
+  if (ordenar){ flores.sort((a,b) => a.z - b.z); ordenar = false; }
   for (const f of flores){
     if (f.modo === 'espera') continue;
     if (f.modo === 'cae'){
       f.y += f.vy * dt; f.x += f.vx * dt; f.rot += f.vr * dt;
-      if (f.y > H + 160){ Object.assign(f, nuevaFlor()); f.y = -120; }
+      if (f.y > H + 160){ Object.assign(f, nuevaFlor()); f.y = -120; ordenar = true; }
     } else if (f.modo === 'vuela'){
       const p = Math.min((ahora - f.t0)/f.dur, 1);
       const e = fac(p);
@@ -626,7 +629,19 @@ const tarjeta = document.getElementById('tarjeta');
 const zonaFlor = document.getElementById('zonaFlor');
 const son = document.getElementById('sonido');
 
-function mostrar(n){ bloques.forEach(b => b.classList.toggle('vivo', +b.dataset.en === n)); }
+/* La frase que sale y la que entra no pueden cruzarse: están una encima de
+   otra y se leían las dos a la vez. Primero se va la anterior, y 700 ms
+   después entra la siguiente. */
+let relevo = null;
+function mostrar(n){
+  bloques.forEach(b => b.classList.remove('vivo'));
+  clearTimeout(relevo);
+  if (!n) return;
+  relevo = setTimeout(() => {
+    const b = bloques.find(x => +x.dataset.en === n);
+    if (b) b.classList.add('vivo');
+  }, 620);   // lo que tarda en irse la anterior
+}
 
 let inicio = -1;
 const marcas = [];
@@ -640,7 +655,7 @@ function posarEnArbol(){
   const sitios = puntas.slice().sort(() => az()-0.5);
   let k = 0;
   for (const f of flores){
-    if (k >= sitios.length || k >= flores.length*0.86) break;
+    if (k >= sitios.length || k >= flores.length*0.92) break;
     const p = sitios[k];
     f.modo = 'vuela'; f.t0 = ahora + k*26; f.dur = ent(1500, 2500);
     f.x0 = f.x; f.y0 = f.y; f.x1 = p.x + ent(-7,7); f.y1 = p.y + ent(-7,7);
@@ -654,8 +669,8 @@ function posarEnArbol(){
 /* ---------- el corazón ---------- */
 function formarCorazon(){
   const libres = flores.slice().sort(() => az()-0.5);
-  const nB = Math.min(Math.round(libres.length*0.70), 118);
-  const nD = Math.min(libres.length - nB, 54);
+  const nB = Math.min(Math.round(libres.length*0.52), 170);
+  const nD = Math.min(libres.length - nB, 110);
   const P = puntosCorazon(nB, nD);
   let k = 0;
   const volar = (f, destino, espera, escala) => {
@@ -664,7 +679,7 @@ function formarCorazon(){
     f.x0 = f.x; f.y0 = f.y; f.x1 = destino.x; f.y1 = destino.y;
     f.r0 = f.rot; f.r1 = f.rot + ent(-1.1, 1.1);
     f.s = escala * Math.min(W,H)/256;
-    f.op = 1; f.z = 0.5; f.vr = ent(-.004,.004);
+    f.op = 1; f.z = 0.5; f.vr = ent(-.004,.004); ordenar = true;
   };
   /* el borde primero y en orden: se ve cómo se traza la curva */
   const dispoB = Math.min(P.borde.length, nB, libres.length);
@@ -676,12 +691,20 @@ function formarCorazon(){
   const dispo = Math.min(P.dentro.length, libres.length - k);
   for (let i=0; i<dispo; i++, k++)
     volar(libres[k], P.dentro[i], 4600 + (i/Math.max(dispo,1))*2300, ent(.06,.085));
-  /* las que sobren se van fuera de cuadro */
+  /* de las que sobran, unas pocas se quedan flotando alrededor del corazón
+     y el resto se van de cuadro: si se quedan todas, tapan la silueta */
+  let quedan = 22;
   for (; k<libres.length; k++){
     const f = libres[k];
-    f.modo = 'vuela'; f.t0 = ahora + ent(0,1500); f.dur = 2600;
-    f.x0=f.x; f.y0=f.y; f.x1 = f.x + ent(-W,W); f.y1 = H + 260;
-    f.r0=f.rot; f.r1=f.rot+ent(-2,2); f.op = 0;
+    f.modo = 'vuela'; f.t0 = ahora + ent(0,1800); f.dur = ent(2200,3200);
+    f.x0 = f.x; f.y0 = f.y; f.r0 = f.rot; f.r1 = f.rot + ent(-2,2);
+    if (quedan-- > 0){
+      const a = az()*6.2832, r = Math.min(W,H)*ent(.30,.46);
+      f.x1 = W/2 + Math.cos(a)*r; f.y1 = H*0.42 + Math.sin(a)*r*0.9;
+      f.s = ent(.045,.075) * Math.min(W,H)/256; f.op = ent(.35,.6);
+    } else {
+      f.x1 = f.x + ent(-W,W); f.y1 = H + 320; f.op = 0;
+    }
   }
 }
 
@@ -749,7 +772,7 @@ document.getElementById('abrir').addEventListener('click', () => {
   inicio = ahora;
   /* se reparten entre metro y medio por encima y el borde de abajo: así la
      pantalla está llena de flores desde el primer segundo, no se va llenando */
-  for (const f of flores){ f.modo = 'cae'; f.y = ent(-H*1.25, H*0.98); }
+  for (const f of flores){ f.modo = 'cae'; f.y = ent(-H*0.95, H*1.0); }
   camObj.z = 1.0;
 });
 

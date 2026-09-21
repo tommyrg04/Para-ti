@@ -275,9 +275,14 @@ un teléfono; con `drawImage` sí. El desenfoque de las que pasan pegadas a la c
 se calcula **una vez** al cargar, en un lienzo aparte: un `filter` por fotograma se
 come la mitad de los cuadros.
 
-- **La lluvia** llena la pantalla desde el primer segundo: las flores se reparten
-  entre metro y medio por encima del borde y el borde de abajo, no empiezan todas
-  fuera de cuadro.
+- **La lluvia** llena la pantalla entera desde el primer segundo: hasta **300
+  flores** en el teléfono y 420 en pantalla grande, repartidas desde justo encima
+  del borde hasta abajo del todo, no empezando todas fuera de cuadro.
+- **El orden por profundidad se recalcula solo cuando alguna flor cambia de
+  plano**, no en cada cuadro: con trescientas, ordenarlas sesenta veces por segundo
+  es trabajo tirado.
+- **Las frases se relevan**: la que sale tarda 0,55 s y la que entra empieza 620 ms
+  después. Cruzándose se leían las dos a la vez, una encima de otra.
 - **El árbol** es recursivo con semilla fija, así que sale igual en cada visita. La
   profundidad varía de una rama a otra: si todas acaban a la vez, las puntas quedan
   alineadas y la copa se ve como una franja recta.
@@ -292,7 +297,7 @@ come la mitad de los cuadros.
 - La música es un acorde de la Web Audio API y arranca con el mismo clic que abre
   el regalo. El ♪ solo sirve para callarla.
 - Tipografías incrustadas y recortadas a las 94 letras que usa la página.
-- **89 KB en total**, contra los 944 KB de la primera versión. Cero peticiones
+- **90 KB en total**, contra los 944 KB de la primera versión. Cero peticiones
   fuera del archivo.
 - Comprobado a 390×844, 360×640 y 1440×900.
 
