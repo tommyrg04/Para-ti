@@ -343,6 +343,11 @@ mensaje de todos, «Hola lindo».
   *Antes iba con Cormorant Garamond, que además traía cifras de estilo antiguo:
   el 1 salía como «ı» y hubo que recortar la fuente conservando la tabla `lnum`.
   Con la del sistema el problema desaparece solo.*
+- **El cierre**: tras «90 de 90», los 90 días se levantan y se deshacen —el
+  paisaje sube y se desvanece mientras unos cuantos puntos de verdad se sueltan
+  hacia arriba; un fundido a secas se veía barato— y en la pantalla ya vacía queda
+  **«Te amo, mi príncipe»**. «Mi príncipe» es la frase de Tom: la dice 142 veces
+  en los 90 días y Emil no la usa ni una.
 - Las frases pasan al tocar. **24 KB**, cero peticiones fuera del archivo.
 - Comprobado a 390×844, 360×640 y 1440×900: 60 fps en los tres.
 

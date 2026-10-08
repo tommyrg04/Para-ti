@@ -69,6 +69,8 @@ body.vivo #pieNegro{opacity:1}
 }
 .bloque.vivo{opacity:1;visibility:visible;transition:opacity 1.3s ease,visibility 1.3s}
 .bloque[data-en]{transform:translateY(29vh)}
+/* el cierre va en el centro: para entonces la pantalla está vacía */
+.bloque.centro{transform:none}
 @media (max-height:700px){ .bloque[data-en]{transform:translateY(26vh)} }
 
 .frase{
@@ -80,6 +82,7 @@ body.vivo #pieNegro{opacity:1}
 .frase + .frase{margin-top:.62em}
 .frase.suave{color:var(--humo);font-weight:300}
 .frase.cita{color:var(--azulclaro);font-weight:400}
+.frase.fecha{margin-top:2.2rem;font-size:.63rem;font-weight:500;letter-spacing:.32em;color:var(--tenue)}
 .frase.grande{
   font-size:clamp(2rem,7.6vw,2.7rem);font-weight:200;
   letter-spacing:-.035em;line-height:1.14;
@@ -160,7 +163,7 @@ body.tocable #pista{opacity:1}
   <div class="bloque" data-en="2"><p class="frase">Noventa columnas. Noventa días.</p><p class="frase suave">Desde el 11 de julio.</p></div>
   <div class="bloque" data-en="3"><p class="frase">Todo empezó un sábado, a las 10:44 de la noche.</p><p class="frase cita">«Hola lindo»</p></div>
   <div class="bloque" data-en="4"><p class="frase">El 20 de julio hablamos 1.806 veces.</p><p class="frase suave">En un solo día.</p></div>
-  <div class="bloque" data-en="5"><p class="frase">73 de las 90 noches se nos hicieron de madrugada.</p><p class="frase suave">La más larga terminó a las 5:27.</p></div>
+  <div class="bloque" data-en="5"><p class="frase">73 de las 90 noches se nos hicieron de madrugada.</p></div>
   <div class="bloque" data-en="6"><p class="frase">Y después está este día.</p></div>
   <div class="bloque" data-en="7"><p class="frase">El silencio más largo de los 90 días empieza aquí.</p><p class="frase suave">19 de septiembre, 2:37 de la tarde.</p></div>
   <div class="bloque" data-en="8"><p class="frase">23 horas y media sin escribirnos ni una sola vez.</p></div>
@@ -169,7 +172,8 @@ body.tocable #pista{opacity:1}
   <div class="bloque" data-en="11"><p class="frase">Tú me dices rey 965 veces.</p><p class="frase suave">Yo te digo mi amor 953. Casi empatados.</p></div>
   <div class="bloque" data-en="12"><p class="frase">Tú te ríes hahaha. Yo jsjsjs.</p><p class="frase suave">En 90 días no lo hemos hecho al revés ni una vez.</p></div>
   <div class="bloque" data-en="13"><p class="frase grande">90 de 90</p><p class="frase suave">Ni un solo día sin hablarnos.</p></div>
-  <div class="bloque" data-en="14"><p class="frase">Para Emil.</p><p class="frase suave">19.09.2026</p></div>
+  <div class="bloque" data-en="14"><p class="frase">Te he llamado «mi príncipe» 142 veces.</p><p class="frase suave">Hoy quiero decirte otra cosa.</p></div>
+  <div class="bloque centro" data-en="15"><p class="frase grande">Te amo, mi príncipe.</p><p class="frase fecha">19.09.2026</p></div>
 </div>
 
 <div id="pista"><span>toca para seguir</span></div>
@@ -355,7 +359,7 @@ let resaltado = -1, resalte = 0, resalteObj = 0;
 let brilloNoche = 0, brilloNocheObj = 0;
 let brilloTodo = 0, brilloTodoObj = 0;
 let bajon = 1, bajonObj = 1;   // cuánto se apaga el paisaje
-let volando = [], flores = [], ahora = 0;
+let volando = [], flores = [], ahora = 0, salida = 0;
 
 function arrancar(){
   construir();
@@ -385,19 +389,26 @@ function bucle(ts){
   g.scale(cam.z, cam.z);
   g.translate(-W/2, -H/2);
 
-  /* el paisaje, ya sembrado, se estampa de una vez */
-  g.globalAlpha = bajon * (0.93 + 0.07*Math.sin(ahora/2600));
-  g.drawImage(paisaje, 0, 0, W, H);
+  /* al final el paisaje se levanta y se deshace: los 90 días se van
+     y dejan la pantalla limpia para la última frase */
+  let irse = 1, subida = 0;
+  if (salida){
+    const q = Math.min((ahora - salida)/3000, 1);
+    irse = Math.max(0, 1 - q*q);
+    subida = q*q*H*0.42;
+  }
+  g.globalAlpha = bajon * irse * (0.93 + 0.07*Math.sin(ahora/2600));
+  g.drawImage(paisaje, 0, -subida, W, H);
   g.globalAlpha = 1;
 
-  if (brilloNoche > 0.01){
-    g.globalAlpha = brilloNoche; g.globalCompositeOperation = 'lighter';
-    g.drawImage(capaDeNoche(), 0, 0, W, H);
+  if (brilloNoche > 0.01 && irse > 0.01){
+    g.globalAlpha = brilloNoche*irse; g.globalCompositeOperation = 'lighter';
+    g.drawImage(capaDeNoche(), 0, -subida, W, H);
     g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
   }
-  if (brilloTodo > 0.01){
-    g.globalAlpha = brilloTodo; g.globalCompositeOperation = 'lighter';
-    g.drawImage(paisaje, 0, 0, W, H);
+  if (brilloTodo > 0.01 && irse > 0.01){
+    g.globalAlpha = brilloTodo*irse; g.globalCompositeOperation = 'lighter';
+    g.drawImage(paisaje, 0, -subida, W, H);
     g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
   }
   /* la columna que toca, encendida */
@@ -540,6 +551,20 @@ function florecer(){
   }
 }
 
+/* unos cuantos puntos suben de verdad mientras el paisaje se deshace:
+   un fundido a secas se ve barato, esto se ve como que se sueltan */
+function levantarPuntos(){
+  const cuantos = W < 420 ? 240 : 360;
+  for (let k=0;k<cuantos;k++){
+    const i = Math.floor(az()*TOTAL);
+    volando.push({
+      x0: puntos[i*2], y0: puntos[i*2+1],
+      x1: puntos[i*2] + ent(-W*0.12, W*0.12), y1: -H*ent(0.05, 0.4),
+      t0: ahora + ent(0, 1500), dur: ent(1800, 3200),
+    });
+  }
+}
+
 /* ---------- el paso a paso ---------- */
 let paso = 0, esperando = false, cerrojo = false;
 const P = lento ? 0.4 : 1;
@@ -565,7 +590,13 @@ const pasos = [
     floresFuera = ahora; volverAtras(); bajonObj = 1;
     setTimeout(() => { brilloTodoObj = 1; mostrar(13); tocable(true); }, T(1700));
   },
-  () => { mostrar(14); tocable(false); },
+  () => mostrar(14),
+  () => {                                   // los 90 días se levantan y se van
+    mostrar(0); tocable(false);
+    salida = ahora;
+    levantarPuntos();
+    setTimeout(() => mostrar(15), T(2600));
+  },
 ];
 
 function avanzar(){
