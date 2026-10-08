@@ -192,6 +192,8 @@ body.tocable #pista{opacity:1}
   <div class="bloque centro" data-en="15"><p class="frase grande">Te amo, mi príncipe.</p><p class="frase fecha">19.09.2026</p></div>
 </div>
 
+<audio id="musica" src="fondo.mp3" loop preload="auto"></audio>
+
 <button id="sonido" aria-label="Silenciar la música">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z" fill="currentColor" stroke="none"/>
@@ -590,88 +592,37 @@ function levantarPuntos(){
 }
 
 /* ---------- la música ----------
-   Pieza propia, generada con la Web Audio API: no hay ningún archivo y no
-   es una versión de nada. Un colchón de cuatro voces en menor que cambia
-   de acorde muy despacio, un motivo suelto por encima y un eco largo, que
-   es lo que le da el aire neblinoso. Muy baja: acompaña, no tapa. */
+   90 s recortados de la canción que eligió Tom, en bucle. Arranca con el
+   mismo clic que abre la pieza, porque el navegador exige un gesto del
+   usuario, y entra subiendo despacio. El ♪ solo sirve para callarla.
+   Si el mp3 no estuviera, la pieza funciona igual: el botón no aparece. */
 const son = document.getElementById('sonido');
-let ctx=null, master=null, eco=null, sonando=false, voces=[], acorde=0, relojA=null, relojM=null;
+const musica = document.getElementById('musica');
+let sonando = false, hayMusica = true;
 
-/* Am7 → Fmaj7 → Cmaj7 → Em7. Se queda dando vueltas sin resolver nunca,
-   que es lo que hace que suene a nostalgia y no a canción. */
-const ACORDES = [
-  [110.00, 261.63, 329.63, 392.00],
-  [ 87.31, 220.00, 261.63, 329.63],
-  [130.81, 196.00, 246.94, 329.63],
-  [ 82.41, 196.00, 246.94, 293.66],
-];
+musica.addEventListener('error', () => { hayMusica = false; son.classList.remove('visible'); });
 
-function nota(hz, cuando, dur, vol){
-  const o = ctx.createOscillator(), g = ctx.createGain();
-  o.type = 'sine'; o.frequency.value = hz;
-  g.gain.setValueAtTime(0, cuando);
-  g.gain.linearRampToValueAtTime(vol, cuando + 0.04);
-  g.gain.exponentialRampToValueAtTime(0.0001, cuando + dur);
-  o.connect(g).connect(eco);
-  o.start(cuando); o.stop(cuando + dur + 0.1);
-}
-function motivo(){
-  if (!ctx || !sonando) return;
-  const n = ACORDES[acorde];
-  const t = ctx.currentTime;
-  nota(n[1+Math.floor(Math.random()*3)] * 2, t, 3.4, 0.07);
-  if (Math.random() < .5) nota(n[1+Math.floor(Math.random()*3)] * 3, t + 0.55, 2.6, 0.035);
-}
-function cambiarAcorde(){
-  if (!ctx) return;
-  acorde = (acorde + 1) % ACORDES.length;
-  const t = ctx.currentTime;
-  voces.forEach((v,i) => v.frequency.setTargetAtTime(ACORDES[acorde][i], t, 1.6));
-}
-
-function crearSonido(){
-  if (ctx) return true;
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if (!AC) return false;
-  ctx = new AC();
-  master = ctx.createGain(); master.gain.value = 0;
-  const filtro = ctx.createBiquadFilter();
-  filtro.type = 'lowpass'; filtro.frequency.value = 900; filtro.Q.value = 0.5;
-  master.connect(filtro).connect(ctx.destination);
-
-  /* eco largo y flojo: sin esto el motivo suena seco y pequeño */
-  eco = ctx.createGain(); eco.gain.value = 1;
-  const retardo = ctx.createDelay(1.2), vuelta = ctx.createGain(), filtroEco = ctx.createBiquadFilter();
-  retardo.delayTime.value = 0.42; vuelta.gain.value = 0.38;
-  filtroEco.type = 'lowpass'; filtroEco.frequency.value = 1600;
-  eco.connect(master);
-  eco.connect(retardo); retardo.connect(filtroEco); filtroEco.connect(vuelta);
-  vuelta.connect(retardo); vuelta.connect(master);
-
-  const aliento = ctx.createOscillator(), alientoG = ctx.createGain();
-  aliento.frequency.value = 0.038; alientoG.gain.value = 0.018;
-  aliento.connect(alientoG).connect(master.gain); aliento.start();
-
-  ACORDES[0].forEach((hz,i) => {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = i === 0 ? 'triangle' : 'sine';
-    o.frequency.value = hz; o.detune.value = (i-1.5)*5;
-    g.gain.value = [0.22,0.16,0.12,0.09][i];
-    o.connect(g).connect(master); o.start();
-    voces.push(o);
-  });
-
-  relojA = setInterval(cambiarAcorde, 9000);
-  relojM = setInterval(motivo, 4400);
-  return true;
+function subirVolumen(){
+  const t0 = performance.now(), dur = 5000, tope = 0.42;
+  (function paso(t){
+    const q = Math.min((t - t0)/dur, 1);
+    musica.volume = tope * q * q;
+    if (q < 1) requestAnimationFrame(paso);
+  })(t0);
 }
 function ponerSonido(quiero){
+  if (!hayMusica) return;
   try{
-    if (!crearSonido()) return;
-    ctx.resume(); sonando = quiero;
-    master.gain.linearRampToValueAtTime(quiero ? 0.21 : 0, ctx.currentTime + (quiero ? 5 : 1.2));
+    sonando = quiero;
     son.classList.toggle('on', quiero);
     son.setAttribute('aria-label', quiero ? 'Silenciar la música' : 'Poner la música');
+    if (quiero){
+      const intento = musica.play();
+      if (intento && intento.catch) intento.catch(() => {});
+      subirVolumen();
+    } else {
+      musica.pause();
+    }
   }catch(e){}
 }
 son.addEventListener('click', e => { e.stopPropagation(); ponerSonido(!sonando); });
