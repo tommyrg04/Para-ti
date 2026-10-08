@@ -335,10 +335,15 @@ mensaje de todos, «Hola lindo».
 - Los 59.344 puntos se siembran **una sola vez** en un lienzo aparte y luego se
   estampan de golpe; dibujarlos uno a uno en cada cuadro no daría 60 fps ni de
   lejos. Las columnas que se encienden sí se pintan en vivo, que son pocas.
-- Cormorant trae cifras de estilo antiguo y el 1 salía como «ı». Como la pieza es
-  casi toda números, se fuerzan las altas — y hay que recortar la tipografía
-  **conservando la tabla `lnum`**, o la opción no tiene efecto.
-- Las frases pasan al tocar. 92 KB, cero peticiones fuera del archivo.
+- **Tipografía del sistema**: en su iPhone eso *es* San Francisco, la de Apple. No
+  se incrusta ninguna fuente — ni 69 KB de descarga ni el parpadeo de la letra
+  cambiando al cargar — y se ve como una app suya. Pesos finos (200 para las
+  cifras grandes, 300 para las frases), tracking negativo en los números y
+  rótulos en 500 muy espaciados.
+  *Antes iba con Cormorant Garamond, que además traía cifras de estilo antiguo:
+  el 1 salía como «ı» y hubo que recortar la fuente conservando la tabla `lnum`.
+  Con la del sistema el problema desaparece solo.*
+- Las frases pasan al tocar. **24 KB**, cero peticiones fuera del archivo.
 - Comprobado a 390×844, 360×640 y 1440×900: 60 fps en los tres.
 
 ### Fuera del sitio: `/qr-emil/`
