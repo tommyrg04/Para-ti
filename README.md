@@ -17,6 +17,7 @@ No existe un índice en la raíz que las enlace: es a propósito.
 | emil (el día)  | `/emil/el-dia/index.html`  | https://tommyrg04.github.io/Para-ti/emil/el-dia/  | ✅ lista, con música |
 | emil (capítulo uno) | `/emil/capitulo-uno/index.html` | https://tommyrg04.github.io/Para-ti/emil/capitulo-uno/ | ✅ lista, con música |
 | emil (flores amarillas) | `/emil/flores-amarillas/index.html` | https://tommyrg04.github.io/Para-ti/emil/flores-amarillas/ | ✅ lista, con música |
+| emil (90 días) | `/emil/90-dias/index.html` | https://tommyrg04.github.io/Para-ti/emil/90-dias/ | ✅ lista, sin sonido |
 | imanol  | `/imanol/index.html`  | https://tommyrg04.github.io/Para-ti/imanol/  | ⛔ pendiente (archivo aún no está en el repo) |
 | clarett | `/clarett/index.html` | https://tommyrg04.github.io/Para-ti/clarett/ | ⛔ pendiente (archivo aún no está en el repo) |
 | mama    | `/mama/index.html`    | https://tommyrg04.github.io/Para-ti/mama/    | ⛔ pendiente (archivo aún no está en el repo) |
@@ -314,6 +315,31 @@ desenlace. Con las trescientas quietas no había quien leyera nada.
 - **90 KB en total**, contra los 944 KB de la primera versión. Cero peticiones
   fuera del archivo.
 - Comprobado a 390×844, 360×640 y 1440×900.
+
+### emil / 90 días — la conversación entera, dibujada
+59.344 mensajes en 90 días, **un punto por mensaje**, repartidos en 90 columnas
+—una por día—. El resultado es el perfil real de esos tres meses: se ve julio
+desbordado, se ven los días flojos y se ve la noche que llegó a las 5:27.
+
+Las cifras salen del export del chat, contadas de verdad. **El export no está en
+el repo** y en la página no hay ni una frase de la conversación salvo el primer
+mensaje de todos, «Hola lindo».
+
+- **El 19 de septiembre tiene su propio momento.** Es el único silencio largo de
+  los 90 días: 23 h 30 min, del 19 a las 14:37 al 20 a las 14:07. Dejaron de
+  escribirse porque estaban juntos. La cámara baja a esa columna, se enciende
+  sola entre las demás apagadas, y entonces sus puntos **suben y se abren en
+  flores**: lirios azules y hortensias, que son las favoritas de Emil —lo dijo él
+  mismo en el chat el 13 de julio—, dibujadas con código sobre negro y azul.
+- **Sin sonido**, a propósito.
+- Los 59.344 puntos se siembran **una sola vez** en un lienzo aparte y luego se
+  estampan de golpe; dibujarlos uno a uno en cada cuadro no daría 60 fps ni de
+  lejos. Las columnas que se encienden sí se pintan en vivo, que son pocas.
+- Cormorant trae cifras de estilo antiguo y el 1 salía como «ı». Como la pieza es
+  casi toda números, se fuerzan las altas — y hay que recortar la tipografía
+  **conservando la tabla `lnum`**, o la opción no tiene efecto.
+- Las frases pasan al tocar. 92 KB, cero peticiones fuera del archivo.
+- Comprobado a 390×844, 360×640 y 1440×900: 60 fps en los tres.
 
 ### Fuera del sitio: `/qr-emil/`
 La **tarjeta de 55×80 mm con el QR** que lleva a `/emil/nosotros/`, con tulipanes,
