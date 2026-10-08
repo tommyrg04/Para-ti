@@ -331,7 +331,14 @@ mensaje de todos, «Hola lindo».
   sola entre las demás apagadas, y entonces sus puntos **suben y se abren en
   flores**: lirios azules y hortensias, que son las favoritas de Emil —lo dijo él
   mismo en el chat el 13 de julio—, dibujadas con código sobre negro y azul.
-- **Sin sonido**, a propósito.
+- **La música es una pieza propia**, generada con la Web Audio API: no hay ningún
+  archivo y no es versión de nada. Cuatro voces en menor dando vueltas por
+  Am7 → Fmaj7 → Cmaj7 → Em7 cada 9 s, un motivo suelto encima y un eco de 0,42 s
+  con realimentación, que es lo que le da el aire neblinoso. Sin resolver nunca,
+  para que suene a nostalgia y no a canción. Arranca con el mismo clic que abre
+  la pieza; el ♪ solo sirve para callarla.
+  Medida renderizándola fuera de línea: **RMS 0,041–0,048 y pico 0,14** — baja a
+  propósito, acompaña sin tapar el texto.
 - Los 59.344 puntos se siembran **una sola vez** en un lienzo aparte y luego se
   estampan de golpe; dibujarlos uno a uno en cada cuadro no daría 60 fps ni de
   lejos. Las columnas que se encienden sí se pintan en vivo, que son pocas.
